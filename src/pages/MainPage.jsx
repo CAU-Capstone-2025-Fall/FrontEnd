@@ -1,9 +1,10 @@
 import Counter from '../containers/CounterContainer';
+
 const MainPage = () => {
   return (
     <div>
       Main Page
-      <Counter />
+      <Counter /> {/* CounterContainer 컴포넌트 사용 */}
     </div>
   );
 };
