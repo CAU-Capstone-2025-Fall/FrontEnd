@@ -1,14 +1,11 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-
-import MainPage from './pages/MainPage';
-import SubPage from './pages/SubPage';
+import AnimalSearch from './pages/AnimalSearch';
 
 const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/sub" element={<SubPage/>} />
+        <Route path="/" element={<AnimalSearch />} />
       </Routes>
     </Router>
   );
