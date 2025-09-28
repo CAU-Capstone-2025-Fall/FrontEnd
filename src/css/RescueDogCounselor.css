@@ -1,0 +1,77 @@
+.chat-popup-wrapper {
+  width: 400px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 8px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.chat-message {
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 16px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.chat-message.user {
+  background: #d1e7ff;
+  align-self: flex-end;
+}
+
+.chat-message.gpt {
+  background: #f0f0f0;
+  align-self: flex-start;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chat-input-row input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.chat-input-row button {
+  padding: 8px 12px;
+  border: none;
+  background: #4cafef;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.chat-recommend-result {
+  margin-bottom: 12px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 4px 10px;
+  margin: 4px;
+  border-radius: 16px;
+  background: #eee;
+  font-size: 0.9em;
+}
+
+.chat-actions {
+  display: flex;
+  justify-content: space-between;
+}
