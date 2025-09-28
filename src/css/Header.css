@@ -1,0 +1,33 @@
+.site__container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 좌우 끝으로 배치 */
+}
+
+.site__brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.site__text {
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+}
+
+.login_button {
+  margin-left: auto;
+  background-color: #ff9800; /* 주황색 */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.login_button:hover {
+  background-color: #e68900; /* hover 시 더 진한 주황 */
+}
