@@ -3,17 +3,17 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
+import RescueDogCounselor from './components/RescueDogCounselor';
 import LoginContainer from './containers/LoginContainer';
-import './index.css';
-
+import './index.css'; // CSS 포함
 import BrowseAll from './pages/BrowseAll';
-import TestChat from './pages/TestChat';
-import { useUIStore } from './store/useUIStore'; // zustand UI 전역 상태
+import ImageEditTest from './pages/ImageEditTest';
+import { useUIStore } from './store/useUIStore';
 
 export default function App() {
   const browseRef = useRef(null);
   const [favorites, setFavorites] = useState([]);
-  const { showLogin, closeLogin } = useUIStore();
+  const { showLogin, closeLogin, showChat, toggleChat } = useUIStore();
 
   const scrollToBrowse = () => browseRef.current?.scrollIntoView({ behavior: 'smooth' });
 
@@ -38,11 +38,24 @@ export default function App() {
             }
           />
 
-          {/* 테스트 챗봇 페이지 */}
-          <Route path="/testchat" element={<TestChat />} />
+          {/* 이미지 편집 테스트 페이지 */}
+          <Route path="/imageEdit" element={<ImageEditTest />} />
         </Routes>
 
+        {/* 로그인 모달 */}
         {showLogin && <LoginContainer onClose={closeLogin} />}
+
+        {/* 오른쪽 하단 고정 챗봇 버튼 */}
+        <button onClick={toggleChat} className="chatbot-button">
+          💬
+        </button>
+
+        {/* 챗봇 팝업 */}
+        {showChat && (
+          <div className="chatbot-popup">
+            <RescueDogCounselor />
+          </div>
+        )}
       </div>
     </Router>
   );
