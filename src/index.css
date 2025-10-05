@@ -687,3 +687,15 @@ body,
   display: flex;
   flex-direction: column;
 }
+
+button.primary {
+  background-color: #ffc49d; /* ← 이 부분이 현재 주황색 */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}

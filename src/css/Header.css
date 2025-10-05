@@ -1,33 +1,66 @@
+header.site {
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
 .site__container {
+  max-width: 1160px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between; /* ✅ 왼쪽(로고) / 오른쪽(버튼) */
+  align-items: center;
+}
+
+/* 오른쪽 버튼 영역 */
+.site__actions {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 좌우 끝으로 배치 */
+  justify-content: flex-end; /* ✅ 오른쪽 끝 정렬 */
+  gap: 10px;
 }
 
-.site__brand {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.site__text {
-  display: flex;
-  flex-direction: column;
-  margin-left: 8px;
-}
-
-.login_button {
-  margin-left: auto;
-  background-color: #ff9900ce; /* 주황색 */
-  color: white;
-  padding: 10px 20px;
+/* 후기 버튼 */
+.review_button {
+  background-color: #e5e7eb00;
+  color: #374151;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  padding: 6px 14px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.review_button:hover {
+  background-color: #d1d5db;
+  color: #111827;
+}
+
+/* 로그인 버튼 */
+.login_button {
+  background-color: #ff8b3d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 600;
   font-size: 16px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s;
 }
 
 .login_button:hover {
-  background-color: #e68900; /* hover 시 더 진한 주황 */
+  background-color: #ff9e5c;
 }

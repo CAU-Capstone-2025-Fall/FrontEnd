@@ -10,6 +10,10 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (p) => p.replace(/^\/api/, ''),
       },
+      '/static': {
+        target: 'http://3.38.48.153:8000',
+        changeOrigin: true,
+      },
     },
   },
 });
