@@ -91,9 +91,16 @@ export default function AnimalDetail({ animal, onClose }) {
             <div className="cta">
               <a
                 className="btn btn--light"
-                href={`tel:${(animal.careTel || '').replaceAll('-', '')}`}
+                onClick={() => {
+                  const phone = (animal.careTel || '').replaceAll('-', '');
+                  if (!phone) return alert('전화번호가 없습니다.');
+                  navigator.clipboard
+                    .writeText(phone)
+                    .then(() => alert('전화번호가 복사되었습니다!'))
+                    .catch(() => alert('복사에 실패했습니다.'));
+                }}
               >
-                보호센터로 전화하기
+                보호센터 전화번호 복사하기
               </a>
             </div>
           </div>

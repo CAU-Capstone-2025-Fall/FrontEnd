@@ -3,27 +3,41 @@ import '../css/Containers/LoginContainer.css';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 
+const USER_MIN = 5,
+  USER_MAX = 10;
+const PASS_MIN = 7,
+  PASS_MAX = 20;
+const trim = (s: string | null | undefined): string => (s ?? '').trim();
+
 const LoginContainer = () => {
-  const { user, login, logout, signup, checkAuth, msg } = useAuthStore();
+  const { user, login, logout, signup, msg } = useAuthStore();
   const { closeLogin } = useUIStore();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // 로그인 처리
+  // 실시간 길이 검증 (공백 제거 기준)
+  const uname = trim(username);
+  const pword = trim(password);
+
+  const usernameInvalid = uname.length > 0 && (uname.length < USER_MIN || uname.length > USER_MAX);
+  const passwordInvalid = pword.length > 0 && (pword.length < PASS_MIN || pword.length > PASS_MAX);
+
+  const canSubmit =
+    uname.length >= USER_MIN &&
+    uname.length <= USER_MAX &&
+    pword.length >= PASS_MIN &&
+    pword.length <= PASS_MAX;
+
   const handleLogin = async () => {
-    await login({ username, password });
-    if (useAuthStore.getState().user) {
-      closeLogin(); // 로그인 성공 시 창 닫기
-    }
+    await login({ username: uname, password: pword });
+    if (useAuthStore.getState().user) closeLogin();
   };
 
-  // 회원가입 처리
   const handleSignup = async () => {
-    await signup({ username, password });
+    await signup({ username: uname, password: pword });
   };
 
-  // 로그아웃 처리
   const handleLogout = async () => {
     await logout();
     closeLogin();
@@ -41,19 +55,40 @@ const LoginContainer = () => {
           <div className="login-form">
             <input
               type="text"
-              placeholder="아이디"
+              placeholder="아이디 (5~10자)"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              minLength={USER_MIN}
+              maxLength={USER_MAX}
+              aria-invalid={usernameInvalid}
+              aria-describedby="username-hint"
             />
+            {usernameInvalid && (
+              <small id="username-hint" className="hint">
+                아이디는 {USER_MIN}~{USER_MAX}자입니다.
+              </small>
+            )}
+
             <input
               type="password"
-              placeholder="비밀번호"
+              placeholder="비밀번호 (7~20자)"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              minLength={PASS_MIN}
+              maxLength={PASS_MAX}
+              aria-invalid={passwordInvalid}
+              aria-describedby="password-hint"
             />
+            {passwordInvalid && (
+              <small id="password-hint" className="hint">
+                비밀번호는 {PASS_MIN}~{PASS_MAX}자입니다.
+              </small>
+            )}
 
-            <button onClick={handleLogin}>로그인</button>
-            <button className="secondary-btn" onClick={handleSignup}>
+            <button onClick={handleLogin} disabled={!canSubmit}>
+              로그인
+            </button>
+            <button className="secondary-btn" onClick={handleSignup} disabled={!canSubmit}>
               회원가입
             </button>
           </div>

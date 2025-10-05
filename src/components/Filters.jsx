@@ -486,7 +486,7 @@ const CAT_BREEDS = [
 ];
 
 export default function Filters({ value, onChange, gunSuggestions }) {
-  const { species, breed, doName, gun, sex, keyword } = value;
+  const { species, breed, doName, gun, sex, keyword, neuterYn, improve } = value;
   const [breedFilterText, setBreedFilterText] = useState('');
 
   const gunguOptions = useMemo(() => {
@@ -617,6 +617,29 @@ export default function Filters({ value, onChange, gunSuggestions }) {
                 value={v}
                 checked={sex === v}
                 onChange={(e) => onChange({ sex: e.target.value })}
+              />
+              {l}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="filters__group">
+        <label>중성화 여부</label>
+        <div className="radios">
+          {[
+            { v: '', l: '전체' },
+            { v: 'Y', l: '예' },
+            { v: 'N', l: '아니오' },
+            { v: 'U', l: '미상' },
+          ].map(({ v, l }) => (
+            <label key={v}>
+              <input
+                type="radio"
+                name="neuterYn"
+                value={v}
+                checked={neuterYn === v}
+                onChange={(e) => onChange({ neuterYn: e.target.value })}
               />
               {l}
             </label>

@@ -13,14 +13,14 @@ export default function Header() {
         <a href="/" className="site__brand">
           <img src={headerIcon} alt="마음잇다 로고" className="site__logo" />
           <div className="site__text">
-            <strong>마음잇다</strong>
+            <strong>첫인상 공작소</strong>
             <span>보호소 동물 입양/추천</span>
           </div>
         </a>
 
         {/* 로그인/로그아웃 버튼 */}
         <button className="login_button" onClick={toggleLogin}>
-          {user ? 'My Page' : 'Login'}
+          {user ? `${user}님` : '로그인'}
         </button>
       </div>
     </header>

@@ -18,6 +18,7 @@ export default function BrowseAll({ favorites, setFavorites }) {
     doName: '모든 지역',
     gun: '',
     sex: '',
+    neuterYn: '',
   });
 
   // 목록/선택/페이지 상태
@@ -62,6 +63,8 @@ export default function BrowseAll({ favorites, setFavorites }) {
 
     // 성별
     if (filters.sex) q.sex_cd = filters.sex;
+
+    if (filters.neuterYn) q.neuterYn = filters.neuterYn;
 
     // 임시 키워드(백엔드가 지원할 때만)
     if (filters.keyword) q.search = filters.keyword;
