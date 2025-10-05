@@ -1,5 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { useAuthStore } from './store/useAuthStore';
 
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
@@ -12,9 +13,13 @@ import ImageEditTest from './pages/ImageEditTest';
 import { useUIStore } from './store/useUIStore';
 
 export default function App() {
+  const checkAuth = useAuthStore((s) => s.checkAuth);
   const browseRef = useRef(null);
   const [favorites, setFavorites] = useState([]);
   const { showLogin, closeLogin, showChat, toggleChat } = useUIStore();
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const scrollToBrowse = () =>
     browseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });

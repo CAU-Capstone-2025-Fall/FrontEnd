@@ -82,16 +82,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   // 로그인 상태 확인
   checkAuth: async () => {
     try {
-      const res = await api.get<AuthResponse>('/protected');
+      const res = await api.get<AuthResponse>('/protected'); // {message: "...님 환영합니다!"}
+      const raw = res.data.user ?? ''; // 혹시 나중에 user 필드를 줄 수도 있음
+      const fromMsg = (res.data.message || '').replace(' 님 환영합니다!', '');
+      const name = raw || fromMsg || null;
       set({
-        user: res.data.user || null,
+        user: name,
         msg: res.data.message || '로그인 상태 확인 완료',
       });
     } catch (err: any) {
-      set({
-        user: null,
-        msg: '로그인 필요',
-      });
+      set({ user: null, msg: '로그인 필요' });
     }
   },
 }));
