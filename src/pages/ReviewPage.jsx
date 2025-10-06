@@ -4,32 +4,26 @@ import ReviewCard from '../components/ReviewCard';
 import ReviewForm from '../components/ReviewForm';
 import ReviewDetail from '../components/ReviewDetail';
 import Pagination from '../components/Pagination';
-import { checkAuth } from '../api/auth';
+import { useAuthStore } from '../store/useAuthStore';
 import '../css/Review.css';
 
 const LIMIT = 9;
 
 export default function ReviewPage() {
-  const [mode, setMode] = useState('list'); // list | new | detail | edit
+  const [mode, setMode] = useState('list'); // 'list' | 'new' | 'detail' | 'edit'
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState(null);
   const [busy, setBusy] = useState(false);
-  const [user, setUser] = useState(null); // 현재 로그인 유저명
   const totalPages = useMemo(() => Math.max(1, Math.ceil(total / LIMIT)), [total]);
 
-  // 로그인 유저 확인 (세션 유지)
+  const { user, checkAuth, ensureAuthed } = useAuthStore();
+
   useEffect(() => {
-    (async () => {
-      try {
-        const data = await checkAuth();
-        const name = (data?.message || '').replace(' 님 환영합니다!', '');
-        if (name) setUser({ name });
-      } catch {
-        setUser(null);
-      }
-    })();
+    // 마운트 시 1회 세션 확인
+    checkAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function refresh() {
@@ -49,10 +43,10 @@ export default function ReviewPage() {
     setMode('detail');
   }
 
-  // 후기 삭제
   async function handleDelete() {
-    if (!user) return alert('로그인이 필요한 서비스입니다.');
-    if (user.name !== selected.authorId) return alert('작성자만 삭제할 수 있습니다.');
+    const current = await ensureAuthed(); // 최신 상태로 가드
+    if (!current) return alert('로그인이 필요한 서비스입니다.');
+    if (current !== selected.authorId) return alert('작성자만 삭제할 수 있습니다.');
 
     if (!window.confirm('정말 삭제하시겠어요?')) return;
     try {
@@ -78,12 +72,9 @@ export default function ReviewPage() {
             <button
               className="primary"
               onClick={async () => {
-                try {
-                  await checkAuth();
-                  setMode('new');
-                } catch {
-                  alert('로그인이 필요한 서비스입니다.');
-                }
+                const current = await ensureAuthed(); // 버튼 클릭 시 즉시 재검증
+                if (!current) return alert('로그인이 필요한 서비스입니다.');
+                setMode('new');
               }}
             >
               후기 작성
@@ -111,10 +102,10 @@ export default function ReviewPage() {
             setMode('list');
             setSelected(null);
           }}
-          onEdit={() => {
-            // 🔸 작성자 확인 후 수정 허용
-            if (!user) return alert('로그인이 필요한 서비스입니다.');
-            if (user.name !== selected.authorId) return alert('작성자만 수정할 수 있습니다.');
+          onEdit={async () => {
+            const current = await ensureAuthed();
+            if (!current) return alert('로그인이 필요한 서비스입니다.');
+            if (current !== selected.authorId) return alert('작성자만 수정할 수 있습니다.');
             setMode('edit');
           }}
           onDelete={handleDelete}
