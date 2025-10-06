@@ -25,9 +25,9 @@
   font-size: 24px;
 }
 .reviews-page .toolbar .primary {
-  background: #ffecc7;
-  color: #a86900;
-  border: 1.5px solid #a86900;
+  background: #ffda91;
+  color: #c67d00;
+  border: none;
   border-radius: 12px;
   padding: 10px 14px;
   font-weight: 800;
@@ -39,8 +39,8 @@
     filter 0.15s ease;
 }
 .reviews-page .toolbar .primary:hover {
-  background: #ffe2ad; /* 더 진한 크림톤 (hover 시 강조) */
-  color: #855300; /* 폰트도 살짝 진하게 */
+  background: #c67d00; /* 더 진한 크림톤 (hover 시 강조) */
+  color: #ffda91; /* 폰트도 살짝 진하게 */
   transform: translateY(-1px);
 }
 .reviews-page .toolbar .primary:focus-visible {
