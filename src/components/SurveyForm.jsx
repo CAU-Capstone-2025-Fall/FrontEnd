@@ -56,8 +56,8 @@ export default function SurveyForm({ user }) {
     try {
       console.log("Submitting survey:", { userId: user, ...answers });
       const res = await axios.post(
-        "http://localhost:8000/userinfo/survey",
-        //"http://3.38.48.153:8000/userinfo/survey",
+        //"http://localhost:8000/userinfo/survey",
+        "http://3.38.48.153:8000/userinfo/survey",
         {
           userId: user,
           ...answers,
