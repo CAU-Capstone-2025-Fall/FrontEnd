@@ -10,6 +10,8 @@ import './index.css';
 import BrowseAll from './pages/BrowseAll';
 import ReviewPage from './pages/ReviewPage';
 import ImageEditTest from './pages/ImageEditTest';
+import SideService from './pages/SideService';
+import SurveyForm from './components/SurveyForm';
 import { useUIStore } from './store/useUIStore';
 
 export default function App() {
@@ -20,6 +22,7 @@ export default function App() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+  const user = useAuthStore((s) => s.user);
 
   const scrollToBrowse = () =>
     browseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -42,6 +45,8 @@ export default function App() {
                   <div ref={browseRef} style={{ scrollMarginTop: '80px' }}>
                     <BrowseAll favorites={favorites} setFavorites={setFavorites} />
                   </div>
+                  <SideService />
+                  {user && <SurveyForm user={user} />}
                 </>
               }
             />

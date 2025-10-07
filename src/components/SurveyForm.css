@@ -1,0 +1,129 @@
+/* 폰트 및 컬러 변수는 index.css와 호환되도록 사용 */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
+
+.survey-section {
+  background: var(--bg-page, #def2ff);
+  border-radius: var(--radius, 16px);
+  box-shadow: var(--shadow, 0 8px 24px rgba(28, 44, 64, 0.08));
+  max-width: 560px;
+  margin: 40px auto 30px;
+  padding: 36px 28px 32px 28px;
+  color: var(--text, #2a2a2a);
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', Arial, sans-serif;
+  font-size: 1.08rem;
+}
+
+.survey-section h3 {
+  font-size: 1.6rem;
+  color: var(--accent, #ff8b3d);
+  font-weight: 900;
+  margin-bottom: 24px;
+  letter-spacing: -1px;
+  text-align: center;
+}
+
+.survey-section label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--text, #2a2a2a);
+  font-size: 1.09rem;
+}
+
+.survey-section input[type="text"],
+.survey-section input[type="number"],
+.survey-section select,
+.survey-section textarea {
+  width: 100%;
+  font-size: 1.06rem;
+  padding: 10px 12px;
+  border: 1px solid var(--line, #e8eff7);
+  border-radius: 10px;
+  margin-bottom: 18px;
+  background: #f9fbff;
+  outline: none;
+  transition: border-color 0.18s;
+}
+
+.survey-section input:focus,
+.survey-section select:focus,
+.survey-section textarea:focus {
+  border-color: var(--accent, #ff8b3d);
+}
+
+.survey-checkbox-group,
+.survey-checkbox-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.survey-checkbox-row label,
+.survey-checkbox-group label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  font-size: 1.04rem;
+  font-weight: 500;
+  background: #fff;
+  border: 1px solid var(--line, #e8eff7);
+  border-radius: 8px;
+  padding: 6px 14px;
+  box-shadow: var(--shadow, 0 2px 8px rgba(28, 44, 64, 0.08));
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.survey-checkbox-row input[type="checkbox"],
+.survey-checkbox-group input[type="checkbox"] {
+  accent-color: var(--accent, #ff8b3d);
+  width: 22px;
+  height: 22px;
+  margin-right: 9px;
+  cursor: pointer;
+  border-radius: 6px;
+  border: 1px solid var(--accent, #ff8b3d);
+  background: #fff;
+}
+
+.survey-section button {
+  background: #fff;
+  color: var(--accent, #ff8b3d);
+  border: 1px solid var(--accent, #ff8b3d);
+  border-radius: 12px;
+  padding: 12px 22px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow, 0 8px 24px rgba(28, 44, 64, 0.08));
+  transition: background 0.18s, color 0.18s;
+  margin-top: 18px;
+}
+
+.survey-section button:hover {
+  background: var(--accent, #ff8b3d);
+  color: #fff;
+}
+
+.survey-section p {
+  margin-top: 16px;
+  color: var(--text-soft, #6b7280);
+  font-size: 1.06rem;
+  font-weight: 500;
+}
+
+@media (max-width: 730px) {
+  .survey-section {
+    padding: 18px 5vw;
+    max-width: 97vw;
+    font-size: 1rem;
+  }
+  .survey-section h3 {
+    font-size: 1.18rem;
+  }
+  .survey-section button {
+    font-size: 1rem;
+    padding: 10px 14px;
+  }
+}
