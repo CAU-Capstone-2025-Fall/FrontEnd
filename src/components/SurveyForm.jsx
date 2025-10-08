@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./SurveyForm.css";
+import "../css/SideService.css";
 
 export default function SurveyForm({ user }) {
   const [answers, setAnswers] = useState({

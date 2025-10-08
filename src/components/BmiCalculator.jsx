@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./SideService.css";
+import "../css/SideService.css";
 
 const bmiRanges = {
   dog: {

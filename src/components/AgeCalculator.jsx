@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./SideService.css";
+import "../css/SideService.css";
 
 const dogAgeMap = {
   small: { first: 15, second: 24, after: 4 },
