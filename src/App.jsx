@@ -19,13 +19,33 @@ export default function App() {
   const browseRef = useRef(null);
   const [favorites, setFavorites] = useState([]);
   const { showLogin, closeLogin, showChat, toggleChat } = useUIStore();
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const user = useAuthStore((s) => s.user);
+
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
-  const user = useAuthStore((s) => s.user);
 
-  const scrollToBrowse = () =>
-    browseRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // 스크롤 감지
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) setShowScrollTop(true);
+      else setShowScrollTop(false);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // "맨 위로" 함수
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const scrollToBrowse = () => {
+    if (!browseRef.current) return;
+    const top = browseRef.current.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
 
   return (
     <Router>
@@ -62,10 +82,20 @@ export default function App() {
         {/* 로그인 모달 */}
         {showLogin && <LoginContainer onClose={closeLogin} />}
 
-        {/* 오른쪽 하단 고정 챗봇 버튼 */}
-        <button onClick={toggleChat} className="chatbot-button">
-          💬
-        </button>
+        {/* 오른쪽 하단 고정 버튼들 */}
+        <div className="floating-buttons">
+          {/* 맨 위로 버튼 */}
+          {showScrollTop && (
+            <button onClick={scrollToTop} className="scroll-top-button visible">
+              ⬆
+            </button>
+          )}
+
+          {/* 챗봇 버튼 */}
+          <button onClick={toggleChat} className="chatbot-button">
+            💬
+          </button>
+        </div>
 
         {/* 챗봇 팝업 */}
         {showChat && (

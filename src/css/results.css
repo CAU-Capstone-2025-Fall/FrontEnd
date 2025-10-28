@@ -1,0 +1,25 @@
+/* =========================================================
+  RESULT + PAGINATION LAYOUT (검색결과 레이아웃)
+========================================================= */
+.result-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 640px;
+}
+.result-content {
+  flex: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  align-content: start;
+}
+.no-results {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  color: #777;
+  pointer-events: none;
+}

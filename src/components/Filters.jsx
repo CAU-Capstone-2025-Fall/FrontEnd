@@ -517,16 +517,6 @@ export default function Filters({ value, onChange, gunSuggestions }) {
 
   return (
     <aside className="filters">
-      <div className="filters__search">
-        <label>검색(임시)</label>
-        <input
-          type="text"
-          placeholder="이름/품종/특징 입력..."
-          value={keyword}
-          onChange={(e) => onChange({ keyword: e.target.value })}
-        />
-      </div>
-
       <div className="filters__group">
         <label>축종</label>
         <select
