@@ -48,6 +48,26 @@ header.site {
   color: #111827;
 }
 
+/* 부가 기능 버튼 */
+.sideservice_button {
+  background-color: #e5e7eb00;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.sideservice_button:hover {
+  background-color: #d1d5db;
+  color: #111827;
+}
+
 /* 로그인 버튼 */
 .login_button {
   background-color: #ff8b3d;

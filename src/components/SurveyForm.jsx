@@ -31,7 +31,7 @@ export default function SurveyForm({ user }) {
   const [error, setError] = useState(null);
 
   // 로그인 상태가 아니면 설문 이용 불가
-  if (!user) {
+  if (!user) {  
     return <p>로그인 후 설문 이용이 가능합니다.</p>;
   }
 
@@ -88,7 +88,7 @@ export default function SurveyForm({ user }) {
 
   return (
     <form
-      className="sideservice-section"
+      className="survey-section"
       onSubmit={handleSubmit}
       style={{ maxWidth: 540, margin: '0 auto' }}
     >

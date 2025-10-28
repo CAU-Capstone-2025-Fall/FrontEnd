@@ -45,8 +45,6 @@ export default function App() {
                   <div ref={browseRef} style={{ scrollMarginTop: '80px' }}>
                     <BrowseAll favorites={favorites} setFavorites={setFavorites} />
                   </div>
-                  <SideService />
-                  {user && <SurveyForm user={user} />}
                 </>
               }
             />
@@ -56,6 +54,9 @@ export default function App() {
 
             {/* 후기 페이지 */}
             <Route path="/reviews" element={<ReviewPage />} />
+
+            {/* 기타 기능 페이지 */}
+            <Route path="/sideservice" element={<SideService />} />
           </Routes>
         </main>
 

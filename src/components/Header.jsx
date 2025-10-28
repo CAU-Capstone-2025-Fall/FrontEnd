@@ -25,6 +25,11 @@ export default function Header() {
             후기
           </button>
 
+          {/* 기타 기능 버튼 */}
+          <button className="sideservice_button" onClick={() => navigate('/sideservice', { state: { user: user } })}>
+            기타 기능
+          </button>
+
           {/* 로그인/로그아웃 버튼 */}
           <button className="login_button" onClick={toggleLogin}>
             {user ? `${user}님` : '로그인'}

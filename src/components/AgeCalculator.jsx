@@ -35,7 +35,7 @@ export default function AgeCalculator() {
 
   return (
     <div className="sideservice-section">
-      <h3>🐾 동물 나이 계산기</h3>
+      <h3>🐾 내 반려동물은 몇 살 일까?</h3>
       <select value={animal} onChange={e => setAnimal(e.target.value)}>
         <option value="dog">강아지</option>
         <option value="cat">고양이</option>
