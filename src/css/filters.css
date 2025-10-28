@@ -1,0 +1,35 @@
+/* =========================================================
+  FILTERS (좌측 필터 패널)
+========================================================= */
+.filters {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+.filters__group select,
+.filters__group input[type='text'] {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+  background: #f9fbff;
+}
+.filters__group {
+  margin-top: 14px;
+}
+.filters__group label {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 6px;
+}
+.radios {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.radios input {
+  margin-right: 6px;
+}

@@ -1,0 +1,85 @@
+/* =========================================================
+  GRID & CARD (카드 리스트)
+========================================================= */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
+  gap: var(--gap);
+}
+.card {
+  width: 100%;
+  max-width: var(--card-w);
+  height: var(--card-h);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.card__imgWrap {
+  aspect-ratio: var(--img-ratio);
+  width: 100%;
+  background: #eef5ff;
+  cursor: pointer;
+  overflow: hidden;
+}
+.card__imgWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+.card__imgWrap:hover img {
+  transform: scale(1.05);
+}
+
+.card__heart {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d1d5db;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+.card__heart.is-on {
+  color: #ff5d5d;
+}
+
+.card__body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.card__title {
+  font-size: 18px;
+  margin: 2px 0 0;
+}
+.card__meta {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.empty {
+  grid-column: 1/-1;
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+  padding: 28px;
+  text-align: center;
+  color: var(--text-soft);
+}

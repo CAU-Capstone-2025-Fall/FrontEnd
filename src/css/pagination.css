@@ -1,0 +1,44 @@
+/* =========================================================
+  PAGINATION (공용)
+========================================================= */
+.pagination {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 16px 0;
+  border-top: 1px solid #eee;
+  white-space: nowrap;
+  overflow: hidden; /* 필요 시 overflow-x: auto; */
+}
+.pagebtn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+
+  /* 중앙 정렬 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 텍스트 스타일 */
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+.pagebtn.is-active {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+}
+.pagebtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

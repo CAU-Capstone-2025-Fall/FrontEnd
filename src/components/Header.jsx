@@ -3,39 +3,106 @@ import '../css/Header.css';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function Header() {
-  const { user } = useAuthStore(); // 로그인 여부 확인
-  const { toggleLogin } = useUIStore(); // 로그인 모달 열기/닫기
+  const { user } = useAuthStore();
+  const { toggleLogin } = useUIStore();
   const navigate = useNavigate();
-  return (
-    <header className="site">
-      <div className="site__container">
-        <a href="/" className="site__brand">
-          <img src={headerIcon} alt="마음잇다 로고" className="site__logo" />
-          <div className="site__text">
-            <strong>첫인상 공작소</strong>
-            <span>보호소 동물 입양/추천</span>
-          </div>
-        </a>
+  const [menuOpen, setMenuOpen] = useState(false);
 
-        <div className="site__actions">
-          {/* 후기 버튼 */}
-          <button className="review_button" onClick={() => navigate('/reviews')}>
+  return (
+    <>
+      <header className="site">
+        <div className="site__container">
+          {/* 로고 */}
+          <a href="/" className="site__brand">
+            <img src={headerIcon} alt="마음잇다 로고" className="site__logo" />
+            <div className="site__text">
+              <strong>첫인상 공작소</strong>
+              <span>보호소 동물 입양/추천</span>
+            </div>
+          </a>
+
+          <div className="site__actions">
+            {/* 로그인 */}
+            <button className="login_button" onClick={toggleLogin}>
+              {user ? `${user}님` : '로그인'}
+            </button>
+
+            <button
+              className="menu_button"
+              onClick={() => setMenuOpen(true)}
+              aria-label="메뉴 열기"
+            >
+              ☰
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* 오른쪽 사이드 메뉴 */}
+      <div className={`side_menu right ${menuOpen ? 'open' : ''}`}>
+        <button className="close_button" onClick={() => setMenuOpen(false)}>
+          ×
+        </button>
+        <nav className="menu_nav">
+          <button
+            onClick={() => {
+              navigate('/');
+              setMenuOpen(false);
+            }}
+          >
+            홈
+          </button>
+          <button
+            onClick={() => {
+              navigate('/');
+              setMenuOpen(false);
+            }}
+          >
+            보호소
+          </button>
+          <button
+            onClick={() => {
+              navigate('/favorites');
+              setMenuOpen(false);
+            }}
+          >
+            즐겨찾기
+          </button>
+          <button
+            onClick={() => {
+              navigate('/reviews');
+              setMenuOpen(false);
+            }}
+          >
             후기
           </button>
-
-          {/* 기타 기능 버튼 */}
-          <button className="sideservice_button" onClick={() => navigate('/sideservice', { state: { user: user } })}>
-            기타 기능
-          </button>
-
-          {/* 로그인/로그아웃 버튼 */}
-          <button className="login_button" onClick={toggleLogin}>
-            {user ? `${user}님` : '로그인'}
-          </button>
-        </div>
+          {user ? (
+            <button
+              onClick={() => {
+                alert('로그아웃 기능 연결 예정');
+                setMenuOpen(false);
+              }}
+            >
+              로그아웃
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                toggleLogin();
+                setMenuOpen(false);
+              }}
+            >
+              로그인
+            </button>
+          )}
+        </nav>
       </div>
-    </header>
+
+      {/* 어두운 배경 (배경 클릭 시 닫기) */}
+      {menuOpen && <div className="overlay" onClick={() => setMenuOpen(false)} />}
+    </>
   );
 }

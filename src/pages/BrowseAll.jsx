@@ -25,7 +25,6 @@ export default function BrowseAll() {
   const [totalCount, setTotalCount] = useState(null);
   const [lastPageSize, setLastPageSize] = useState(0);
 
-  // ✅ 전역 스토어 구독
   const { ids: favorites, map: favMap, toggle } = useFavoriteStore();
 
   const totalPages = useMemo(
