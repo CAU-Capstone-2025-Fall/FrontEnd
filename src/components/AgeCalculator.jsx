@@ -7,6 +7,9 @@ const dogAgeMap = {
   large: { first: 12, second: 20, after: 6 },
 };
 const catAgeMap = { first: 15, second: 24, after: 4 };
+const rabbitAgeMap = { first: 9, second: 18, after: 9 };
+const parrotAgeMap = { first: 7, second: 15, after: 7 };
+const turtleAgeMap = { first: 10, second: 20, after: 4 };
 
 export default function AgeCalculator() {
   const [animal, setAnimal] = useState("dog");
@@ -31,6 +34,24 @@ export default function AgeCalculator() {
       else if (n > 2) humanAge = catAgeMap.second + (n - 2) * catAgeMap.after;
       setResult(`고양이 ${n}살은 사람 나이로 약 ${humanAge}세에 해당합니다.`);
     }
+    else if (animal === "rabbit") {
+      if (n === 1) humanAge = rabbitAgeMap.first;
+      else if (n === 2) humanAge = rabbitAgeMap.second;
+      else if (n > 2) humanAge = rabbitAgeMap.second + (n - 2) * rabbitAgeMap.after;
+      setResult(`토끼 ${n}살은 사람 나이로 약 ${humanAge}세에 해당합니다.`);
+    }
+    else if (animal === "parrot") {
+      if (n === 1) humanAge = parrotAgeMap.first;
+      else if (n === 2) humanAge = parrotAgeMap.second;
+      else if (n > 2) humanAge = parrotAgeMap.second + (n - 2) * parrotAgeMap.after;
+      setResult(`앵무새 ${n}살은 사람 나이로 약 ${humanAge}세에 해당합니다.`);
+    }
+    else if (animal === "turtle") {
+      if (n === 1) humanAge = turtleAgeMap.first;
+      else if (n === 2) humanAge = turtleAgeMap.second;
+      else if (n > 2) humanAge = turtleAgeMap.second + (n - 2) * turtleAgeMap.after;
+      setResult(`거북이 ${n}살은 사람 나이로 약 ${humanAge}세에 해당합니다.`);
+    }
   };
 
   return (
@@ -39,6 +60,9 @@ export default function AgeCalculator() {
       <select value={animal} onChange={e => setAnimal(e.target.value)}>
         <option value="dog">강아지</option>
         <option value="cat">고양이</option>
+        <option value="rabbit">토끼</option>
+        <option value="parrot">앵무새</option>
+        <option value="turtle">거북이</option>
       </select>
       {animal === "dog" && (
         <select value={dogSize} onChange={e => setDogSize(e.target.value)} style={{ marginLeft: 10 }}>

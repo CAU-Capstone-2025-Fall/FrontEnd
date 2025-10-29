@@ -25,7 +25,7 @@
 .survey-section label {
   display: block;
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: 18px;
   color: var(--text, #2a2a2a);
   font-size: 1.09rem;
 }

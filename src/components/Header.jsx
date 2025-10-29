@@ -53,32 +53,72 @@ export default function Header() {
               setMenuOpen(false);
             }}
           >
-            홈
+            홈 
           </button>
+
+          <button
+            onClick={() => {
+              navigate('/mypage');
+              setMenuOpen(false);
+            }}
+          >
+            마이페이지
+          </button>
+          
           <button
             onClick={() => {
               navigate('/');
               setMenuOpen(false);
             }}
           >
-            보호소
+            보호소 
           </button>
+
           <button
             onClick={() => {
               navigate('/favorites');
               setMenuOpen(false);
             }}
           >
-            즐겨찾기
+            즐겨찾기 
           </button>
+
           <button
             onClick={() => {
               navigate('/reviews');
               setMenuOpen(false);
             }}
           >
-            후기
+            후기 
           </button>
+
+          <button
+            onClick={() => {
+              navigate('/surveyform', { state: { user } });
+              setMenuOpen(false);
+            }}
+          >
+            입양 설문조사
+          </button>
+
+          <button
+            onClick={() => {
+              navigate('/agecalculator');
+              setMenuOpen(false);
+            }}
+          >
+            사람 나이로 보는 동물 나이 
+          </button>
+
+          <button
+            onClick={() => {
+              navigate('/bmicalculator');
+              setMenuOpen(false);
+            }}
+          >
+            동물 비만도 계산기
+          </button>
+
           {user ? (
             <button
               onClick={() => {

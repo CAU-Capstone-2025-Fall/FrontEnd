@@ -10,9 +10,11 @@ import './index.css';
 import BrowseAll from './pages/BrowseAll';
 import ReviewPage from './pages/ReviewPage';
 import ImageEditTest from './pages/ImageEditTest';
-import SideService from './pages/SideService';
 import SurveyForm from './components/SurveyForm';
 import { useUIStore } from './store/useUIStore';
+import AgeCalculator from './components/AgeCalculator';
+import BmiCalculator from './components/BmiCalculator';
+import Mypage from './pages/Mypage';
 
 export default function App() {
   const checkAuth = useAuthStore((s) => s.checkAuth);
@@ -75,8 +77,17 @@ export default function App() {
             {/* 후기 페이지 */}
             <Route path="/reviews" element={<ReviewPage />} />
 
+            {/* 마이페이지 */}
+            <Route
+              path="/mypage"
+              element={<Mypage user={user} favorites={favorites} />}
+            />
+
             {/* 기타 기능 페이지 */}
-            <Route path="/sideservice" element={<SideService />} />
+            <Route path="/agecalculator" element={<AgeCalculator />} />
+            <Route path="/bmicalculator" element={<BmiCalculator />} />
+            <Route path="/surveyform" element={<SurveyForm user={user} />} />
+
           </Routes>
         </main>
 
