@@ -1,4 +1,3 @@
-// src/store/useFavoriteStore.js
 import { create } from 'zustand';
 import { getFavorites, addFavorite, removeFavorite } from '../api/favorite';
 import { getAnimalById } from '../api/animals';
@@ -49,17 +48,27 @@ export const useFavoriteStore = create((set, get) => ({
     if (get()._wired) return;
     set({ _wired: true });
 
-    // (A) 시작 즉시 로컬 하이드레이션
+    // (A) 부팅 시 즉시 로컬 캐시 반영 (잠깐이라도 보여야 한다면 유지, 아니면 주석 처리)
     get().initFromStorage();
 
-    // (B) 부팅 직후 현재 사용자 기준으로 한 번 동기화 (fireImmediately 대체)
+    // (B) 로그인 여부 확인 후 초기 세팅
     (async () => {
-      const currentUser = useAuthStore.getState().user;
-      if (currentUser) {
-        await get().loadFromServer();
-        get().saveToStorage();
-      } else {
-        // 비로그인: 로컬 캐시만 유지 (이미 initFromStorage 호출됨)
+      try {
+        const auth = useAuthStore.getState();
+        const user = await auth.ensureAuthed(); // ✅ 최신 로그인 상태 확인
+
+        if (user) {
+          await get().loadFromServer();
+          get().saveToStorage();
+        } else {
+          set({ ids: [], map: {} });
+          get().clearStorage();
+        }
+      } catch (err) {
+        console.warn('Auth check failed during wireAuth()', err);
+        // 인증 실패 시에도 초기화
+        set({ ids: [], map: {} });
+        get().clearStorage();
       }
     })();
 
@@ -83,6 +92,7 @@ export const useFavoriteStore = create((set, get) => ({
     // (D) 포커스/스토리지 이벤트에서 재동기화
     const onFocus = () => {
       const user = useAuthStore.getState().user;
+
       if (user) {
         get()
           .loadFromServer()
