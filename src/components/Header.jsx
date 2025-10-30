@@ -131,6 +131,15 @@ export default function Header() {
             반려동물 추천
           </button>
 
+          <button
+            onClick={() => {
+              navigate('/surveyform', { state: { user } });
+              setMenuOpen(false);
+            }}
+          >
+            입양 설문조사
+          </button>
+
           {/* 구분선: 입양 후 */}
           <div className="menu_section_title">- 입양 후 -</div>
 
@@ -140,12 +149,12 @@ export default function Header() {
               setMenuOpen(false);
             }}
           >
-            후기
+            후기 
           </button>
 
           <button
             onClick={() => {
-              navigate('/animal-age');
+              navigate('/agecalculator');
               setMenuOpen(false);
             }}
           >
@@ -154,7 +163,7 @@ export default function Header() {
 
           <button
             onClick={() => {
-              navigate('/obesity');
+              navigate('/bmicalculator');
               setMenuOpen(false);
             }}
           >
