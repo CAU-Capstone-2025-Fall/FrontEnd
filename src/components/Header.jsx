@@ -122,22 +122,13 @@ export default function Header() {
             onClick={() => {
               if (!user) {
                 alert('로그인이 필요한 서비스입니다.');
-                return; // 🚫 이동 막기
+                return;
               }
               navigate('/recommend');
               setMenuOpen(false);
             }}
           >
             반려동물 추천
-          </button>
-
-          <button
-            onClick={() => {
-              navigate('/surveyform', { state: { user } });
-              setMenuOpen(false);
-            }}
-          >
-            입양 설문조사
           </button>
 
           {/* 구분선: 입양 후 */}
@@ -149,7 +140,7 @@ export default function Header() {
               setMenuOpen(false);
             }}
           >
-            후기 
+            후기
           </button>
 
           <button
