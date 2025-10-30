@@ -15,6 +15,7 @@ import { useUIStore } from './store/useUIStore';
 import AgeCalculator from './components/AgeCalculator';
 import BmiCalculator from './components/BmiCalculator';
 import Mypage from './pages/Mypage';
+import RecommendPage from './pages/RecommendPage';
 
 export default function App() {
   const checkAuth = useAuthStore((s) => s.checkAuth);
@@ -78,16 +79,12 @@ export default function App() {
             <Route path="/reviews" element={<ReviewPage />} />
 
             {/* 마이페이지 */}
-            <Route
-              path="/mypage"
-              element={<Mypage user={user} favorites={favorites} />}
-            />
+            <Route path="/mypage" element={<Mypage user={user} favorites={favorites} />} />
+            <Route path="/recommend" element={<RecommendPage />} />
 
             {/* 기타 기능 페이지 */}
             <Route path="/agecalculator" element={<AgeCalculator />} />
             <Route path="/bmicalculator" element={<BmiCalculator />} />
-            <Route path="/surveyform" element={<SurveyForm user={user} />} />
-
           </Routes>
         </main>
 

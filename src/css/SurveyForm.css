@@ -1,129 +1,337 @@
-/* 폰트 및 컬러 변수는 index.css와 호환되도록 사용 */
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
+/* ============================
+   Mypage.css
+   Modern clean layout for MyPage.jsx
+   ============================ */
 
-.survey-section {
-  background: var(--bg-page, #def2ff);
-  border-radius: var(--radius, 16px);
-  box-shadow: var(--shadow, 0 8px 24px rgba(28, 44, 64, 0.08));
-  max-width: 560px;
-  margin: 40px auto 30px;
-  padding: 36px 28px 32px 28px;
-  color: var(--text, #2a2a2a);
-  font-family: 'Pretendard Variable', Pretendard, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', Arial, sans-serif;
-  font-size: 1.08rem;
+.mypage-section {
+  font-family:
+    'Pretendard Variable',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 40px 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  color: #222;
+  transition: all 0.3s ease;
 }
 
-.survey-section h3 {
+.mypage-section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.mypage-section h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  color: #555;
+  border-left: 4px solid #a4d4ae;
+  padding-left: 10px;
+}
+
+.mypage-section section {
+  margin-bottom: 60px;
+}
+
+/* ===== 설문 정보 섹션 ===== */
+.mypage-section .survey-answers {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* ===== 찜한 동물 카드 ===== */
+.result-shell {
+  background: #fafafa;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.result-content.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 0;
+  color: #aaa;
+  font-size: 1rem;
+  background: #fff;
+  border: 1px dashed #ddd;
+  border-radius: 10px;
+}
+
+/* ===== 후기 섹션 ===== */
+.reviews-page {
+  background: #fafafa;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.reviews-page h2 {
   font-size: 1.6rem;
-  color: var(--accent, #ff8b3d);
-  font-weight: 900;
-  margin-bottom: 24px;
-  letter-spacing: -1px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 
-.survey-section label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 18px;
-  color: var(--text, #2a2a2a);
-  font-size: 1.09rem;
+.reviews-page .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
 }
 
-.survey-section input[type="text"],
-.survey-section input[type="number"],
-.survey-section select,
-.survey-section textarea {
-  width: 100%;
-  font-size: 1.06rem;
-  padding: 10px 12px;
-  border: 1px solid var(--line, #e8eff7);
-  border-radius: 10px;
-  margin-bottom: 18px;
-  background: #f9fbff;
-  outline: none;
-  transition: border-color 0.18s;
-}
-
-.survey-section input:focus,
-.survey-section select:focus,
-.survey-section textarea:focus {
-  border-color: var(--accent, #ff8b3d);
-}
-
-.survey-checkbox-group,
-.survey-checkbox-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.survey-checkbox-row label,
-.survey-checkbox-group label {
-  display: flex;
-  align-items: center;
-  margin-bottom: 0;
-  font-size: 1.04rem;
-  font-weight: 500;
+.review-card {
   background: #fff;
-  border: 1px solid var(--line, #e8eff7);
-  border-radius: 8px;
-  padding: 6px 14px;
-  box-shadow: var(--shadow, 0 2px 8px rgba(28, 44, 64, 0.08));
-  cursor: pointer;
-  transition: background 0.18s, border-color 0.18s;
-}
-
-.survey-checkbox-row input[type="checkbox"],
-.survey-checkbox-group input[type="checkbox"] {
-  accent-color: var(--accent, #ff8b3d);
-  width: 22px;
-  height: 22px;
-  margin-right: 9px;
-  cursor: pointer;
-  border-radius: 6px;
-  border: 1px solid var(--accent, #ff8b3d);
-  background: #fff;
-}
-
-.survey-section button {
-  background: #fff;
-  color: var(--accent, #ff8b3d);
-  border: 1px solid var(--accent, #ff8b3d);
   border-radius: 12px;
-  padding: 12px 22px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  cursor: pointer;
-  box-shadow: var(--shadow, 0 8px 24px rgba(28, 44, 64, 0.08));
-  transition: background 0.18s, color 0.18s;
-  margin-top: 18px;
+  padding: 18px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  border: 1px solid #eee;
 }
 
-.survey-section button:hover {
-  background: var(--accent, #ff8b3d);
+.review-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== 버튼류 ===== */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+button.primary {
+  background: #a4d4ae;
   color: #fff;
 }
 
-.survey-section p {
-  margin-top: 16px;
-  color: var(--text-soft, #6b7280);
-  font-size: 1.06rem;
-  font-weight: 500;
+button.primary:hover {
+  background: #92c29d;
 }
 
-@media (max-width: 730px) {
-  .survey-section {
-    padding: 18px 5vw;
-    max-width: 97vw;
-    font-size: 1rem;
+button.danger {
+  background: #e57373;
+  color: #fff;
+}
+
+button.danger:hover {
+  background: #d32f2f;
+}
+
+/* ===== 디테일 뷰 ===== */
+.detail-modal {
+  background: #fff;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.detail-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.detail-body {
+  line-height: 1.7;
+  color: #444;
+}
+
+.detail-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 2rem;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 768px) {
+  .mypage-section {
+    padding: 24px 16px;
   }
-  .survey-section h3 {
-    font-size: 1.18rem;
+
+  .result-content.grid,
+  .reviews-page .grid {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
-  .survey-section button {
-    font-size: 1rem;
-    padding: 10px 14px;
+
+  .mypage-section h2 {
+    font-size: 1.6rem;
   }
+
+  .mypage-section h3 {
+    font-size: 1.2rem;
+  }
+}
+
+/* ===== 내 정보 섹션 (SurveyAnswers) ===== */
+.myinfo-card {
+  background: linear-gradient(145deg, #f9fafb, #ffffff);
+  border-radius: 16px;
+  padding: 32px 36px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.myinfo-card:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.myinfo-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.myinfo-header .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #a4d4ae;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+.myinfo-header h4 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.myinfo-header span {
+  font-size: 0.95rem;
+  color: #888;
+}
+
+/* === 설문 내용 카드 === */
+.myinfo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.myinfo-item {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  padding: 14px 16px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+}
+
+.myinfo-item:hover {
+  border-color: #a4d4ae;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.myinfo-item .label {
+  font-size: 0.9rem;
+  color: #777;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.myinfo-item .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* === 없을 때 (빈 상태) === */
+.myinfo-empty {
+  text-align: center;
+  color: #aaa;
+  padding: 30px 0;
+  border: 1px dashed #ddd;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 1rem;
+}
+/* === 일렬 세로형 내 정보 리스트 === */
+.myinfo-card.vertical {
+  padding: 32px 36px;
+  background: linear-gradient(145deg, #f9fafb, #ffffff);
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.myinfo-list {
+  list-style: none;
+  margin: 20px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.myinfo-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.myinfo-list li:hover {
+  border-color: #a4d4ae;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.myinfo-list .label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.myinfo-list .value {
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+  text-align: right;
+  max-width: 60%;
+  word-wrap: break-word;
 }
