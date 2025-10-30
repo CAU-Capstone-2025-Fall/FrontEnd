@@ -10,8 +10,8 @@ import './index.css';
 import BrowseAll from './pages/BrowseAll';
 import ReviewPage from './pages/ReviewPage';
 import ImageEditTest from './pages/ImageEditTest';
+import Recommend from './pages/RecommendPage';
 import SideService from './pages/SideService';
-import SurveyForm from './components/SurveyForm';
 import { useUIStore } from './store/useUIStore';
 
 export default function App() {
@@ -66,7 +66,6 @@ export default function App() {
                     <BrowseAll favorites={favorites} setFavorites={setFavorites} />
                   </div>
                   <SideService />
-                  {user && <SurveyForm user={user} />}
                 </>
               }
             />
@@ -76,6 +75,7 @@ export default function App() {
 
             {/* 후기 페이지 */}
             <Route path="/reviews" element={<ReviewPage />} />
+            <Route path="/recommend" element={<Recommend />} />
           </Routes>
         </main>
 

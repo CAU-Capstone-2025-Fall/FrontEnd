@@ -120,6 +120,10 @@ export default function Header() {
 
           <button
             onClick={() => {
+              if (!user) {
+                alert('로그인이 필요한 서비스입니다.');
+                return; // 🚫 이동 막기
+              }
               navigate('/recommend');
               setMenuOpen(false);
             }}
