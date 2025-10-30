@@ -6,7 +6,7 @@ const dict = [
   { "allergyAnimal": "알레르기 여부" },
   { "budget": "돌봄 예산" },
   { "careTime": "돌봄 시간" },
-  { "dailyHomeTime": "재택 시간" },
+  { "dailyHomeTime": "주거 시간" },
   { "expectations": "선호 특성" },
   { "familyCount": "가족 인원" },
   { "favoriteAnimals": "선호 동물" },
@@ -25,7 +25,7 @@ export default function SurveyAnswers({ answers }) {
       {Object.entries(answers).map(([key, value]) => (
         <li key={key}>
           {/* <b>{key}</b>: {Array.isArray(value) ? value.join(', ') : value} */}
-          <b>{dict.find(item => item[key])?.[key] || key}</b>: {Array.isArray(value) ? value.join(', ') : value}
+          <b>{dict.find(item => item[key])?.[key] || key}</b>: {Array.isArray(value) ? value.join(', ') : value ? value : '없음'}
         </li>
       ))}
     </ul>
