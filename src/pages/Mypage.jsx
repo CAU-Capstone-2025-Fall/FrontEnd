@@ -23,11 +23,29 @@ export default function MyPage({ user }) {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
+    if (!user) {
+      // 로그아웃 시 모든 사용자 정보 상태를 초기화
+      setSurvey(null);
+      setSelected(null);
+      setMyReviews([]);
+      setReviewSelected(null);
+      setMode('list');
+    } else {
+      // 로그인 시 정보 다시 불러오기
+      api.get(`/${user}`).then((res) => {
+        if (res.data.success) setSurvey(res.data.data);
+      });
+      // 리뷰도 다시 불러오기 (동일하게)
+      fetchMyReviews();
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (user) {
-      api.get(`/${user}`)
-        .then(res => {
-          if (res.data.success) setSurvey(res.data.data);
-        });
+      api.get(`/${user}`).then((res) => {
+        if (res.data.success) setSurvey(res.data.data);
+      });
+      fetchMyReviews();
     }
   }, [user]);
 
@@ -36,21 +54,18 @@ export default function MyPage({ user }) {
     [favorites, favMap]
   );
 
-  useEffect(() => {
-    async function fetchMyReviews() {
-      let itemList = [];
-      if (user) {
-        const { items } = await listReviews();
-        for (const item of items) {
-          if (item.authorId === user) {
-            itemList.push(item);
-          }
+  async function fetchMyReviews() {
+    let itemList = [];
+    if (user) {
+      const { items } = await listReviews();
+      for (const item of items) {
+        if (item.authorId === user) {
+          itemList.push(item);
         }
-        setMyReviews(itemList || []);
       }
+      setMyReviews(itemList || []);
     }
-    fetchMyReviews();
-  }, [user]);
+  }
 
   async function openDetail(id) {
     const doc = await getReview(id);
@@ -82,27 +97,32 @@ export default function MyPage({ user }) {
       <h2>마이페이지</h2>
       <section>
         <h3>내 정보</h3>
-        {survey ? <SurveyAnswers answers={survey} /> : <p>설문 답변이 없습니다.</p>}
+        {!user ? (
+          <p>사용자 정보가 없습니다.</p>
+        ) : (
+          survey ? <SurveyAnswers answers={survey} /> : <p>설문 답변이 없습니다.</p>   
+        )}
       </section>
-      <section style={{marginTop: '40px'}}>
+      <section style={{ marginTop: '40px' }}>
         <h3>내가 찜한 동물</h3>
-            <div className="result-shell">
-                <div className="result-content grid">
-                {favAnimals.map((a) => (
-                    <AnimalCard
-                    key={a.desertionNo}
-                    animal={a}
-                    isFav={favorites.includes(a.desertionNo)}
-                    onOpen={setSelected}
-                    onToggleFav={() => toggle(a)}
-                    />
-                ))}
-
-                {favAnimals.length === 0 && (
-                    <div className="empty">찜한 동물이 없습니다</div>
-                )}
-                </div>
-            </div>
+        <div className="result-shell">
+          <div className="result-content grid">
+            {favAnimals.map((a) => (
+              <AnimalCard
+                key={a.desertionNo}
+                animal={a}
+                isFav={favorites.includes(a.desertionNo)}
+                onOpen={setSelected}
+                onToggleFav={() => toggle(a)}
+              />
+            ))}
+            {!user ? (
+              <p>사용자 정보가 없습니다.</p>
+            ) : (
+              favAnimals.length === 0 && <div className="empty">찜한 동물이 없습니다</div>   
+           )}
+          </div>
+        </div>
         <AnimalDetail animal={selected} onClose={() => setSelected(null)} />
       </section>
       <section>
@@ -110,15 +130,18 @@ export default function MyPage({ user }) {
           {mode === 'list' && (
             <>
               <h2>내가 쓴 후기</h2>
-              {myReviews.length === 0 ? (
-              <div className="empty">아직 내가 쓴 후기가 없습니다.</div>
+              {!user ? (
+                <p>사용자 정보가 없습니다.</p>
               ) : (
-              <div className="grid">
-                {myReviews.map((it) => (
-                  <ReviewCard key={it._id} item={it} onClick={() => openDetail(it._id)} />
-                ))}
-              </div>
-              )}
+                myReviews.length === 0 ? (
+                <div className="empty">아직 내가 쓴 후기가 없습니다.</div>
+              ) : (
+                <div className="grid">
+                  {myReviews.map((it) => (
+                    <ReviewCard key={it._id} item={it} onClick={() => openDetail(it._id)} />
+                  ))}
+                </div>
+              ))}
             </>
           )}
 
@@ -132,7 +155,8 @@ export default function MyPage({ user }) {
               onEdit={async () => {
                 const current = await ensureAuthed();
                 if (!current) return alert('로그인이 필요한 서비스입니다.');
-                if (current !== reviewSelected.authorId) return alert('작성자만 수정할 수 있습니다.');
+                if (current !== reviewSelected.authorId)
+                  return alert('작성자만 수정할 수 있습니다.');
                 setMode('edit');
               }}
               onDelete={handleDelete}
@@ -140,7 +164,6 @@ export default function MyPage({ user }) {
             />
           )}
         </div>
-
       </section>
     </div>
   );

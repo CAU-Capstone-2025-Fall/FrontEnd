@@ -1,9 +1,11 @@
+import React from 'react';
+
 const dict = [
   { userId: 'ID' },
-  { activityLevel: '활동성향' },
+  { activityLevel: '활동 성향' },
   { additionalNote: '기타 사항' },
   { address: '주소' },
-  { allergyAnimal: '알레르기 여부' },
+  { allergyAnimal: '알레르기 동물' },
   { budget: '돌봄 예산' },
   { careTime: '돌봄 시간' },
   { dailyHomeTime: '재택 시간' },
@@ -21,14 +23,20 @@ const dict = [
 
 export default function SurveyAnswers({ answers }) {
   return (
-    <ul>
-      {Object.entries(answers).map(([key, value]) => (
-        <li key={key}>
-          {/* <b>{key}</b>: {Array.isArray(value) ? value.join(', ') : value} */}
-          <b>{dict.find((item) => item[key])?.[key] || key}</b>:{' '}
-          {Array.isArray(value) ? value.join(', ') : value}
-        </li>
-      ))}
-    </ul>
+    <div className="survey-answers">
+      <h4>📋 설문 응답 요약</h4>
+      <div className="answers-grid">
+        {Object.entries(answers).map(([key, value]) => {
+          const label = dict.find((item) => item[key])?.[key] || key;
+          const text = Array.isArray(value) ? value.join(', ') : value || '—';
+          return (
+            <div key={key} className="answer-card">
+              <span className="label">{label}</span>
+              <span className="value">{text}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
