@@ -47,7 +47,9 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: var(--shadow, 0 8px 24px rgba(28, 44, 64, 0.08));
-  transition: 0.2s background, 0.2s color;
+  transition:
+    0.2s background,
+    0.2s color;
 }
 .sideservice-section button:hover {
   background: var(--accent, #ff8b3d);
