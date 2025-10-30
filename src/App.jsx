@@ -85,6 +85,7 @@ export default function App() {
             {/* 기타 기능 페이지 */}
             <Route path="/agecalculator" element={<AgeCalculator />} />
             <Route path="/bmicalculator" element={<BmiCalculator />} />
+            <Route path="/recommend" element={<SurveyForm user={user} />} />
           </Routes>
         </main>
 
