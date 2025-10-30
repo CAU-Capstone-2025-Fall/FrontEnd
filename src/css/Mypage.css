@@ -1,0 +1,108 @@
+/* =============================
+   Mypage Section Styles
+============================= */
+
+.mypage-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 20px 40px 20px;
+  background: var(--bg-page, #def2ff);
+  border-radius: var(--radius, 16px);
+  box-shadow: var(--shadow, 0 8px 24px rgba(28,44,64,0.08));
+  color: var(--text, #2a2a2a);
+}
+
+.mypage-section h2 {
+  text-align: center;
+  font-size: 2.1rem;
+  color: var(--accent, #ff8b3d);
+  font-weight: 900;
+  margin-bottom: 32px;
+  letter-spacing: -1px;
+}
+
+.mypage-section h3 {
+  font-size: 1.3rem;
+  color: var(--accent-200, #ff9e5c);
+  font-weight: 700;
+  margin-bottom: 18px;
+  margin-top: 40px;
+  text-align: left;
+}
+
+.mypage-section section {
+  margin-bottom: 48px;
+}
+
+.mypage-section .result-shell {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.mypage-section .result-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.mypage-section .grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+}
+
+.mypage-section .empty {
+  text-align: center;
+  color: var(--text-soft, #6b7280);
+  font-size: 1.08rem;
+  padding: 36px 0;
+}
+
+.mypage-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px 0;
+}
+
+.mypage-section li {
+  font-size: 1.08rem;
+  margin-bottom: 10px;
+}
+
+.mypage-section .reviews-page {
+  margin-top: 16px;
+}
+
+.mypage-section .reviews-page h2 {
+  text-align: center;
+  font-size: 1.35rem;
+  color: var(--accent, #ff8b3d);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.mypage-section .reviews-page .grid {
+  justify-content: center;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .mypage-section {
+    max-width: 98vw;
+    padding: 18px 3vw 20px 3vw;
+    font-size: 1.02rem;
+  }
+  .mypage-section h2 {
+    font-size: 1.3rem;
+  }
+  .mypage-section h3 {
+    font-size: 1.09rem;
+    margin-top: 26px;
+  }
+  .mypage-section .result-content,
+  .mypage-section .grid {
+    gap: 14px;
+  }
+}
