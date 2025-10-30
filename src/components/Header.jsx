@@ -1,15 +1,35 @@
 import headerIcon from '../assets/logo-icon.png';
 import '../css/Header.css';
+import homeIcon from '../assets/house.png';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
   const { user } = useAuthStore();
   const { toggleLogin } = useUIStore();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  // ✅ 버튼 클릭 시: 홈으로 이동
+  const handleGoToShelter = () => {
+    navigate('/', { state: { scroll: 'shelter' } }); // scroll 신호 전달
+    setMenuOpen(false);
+  };
+
+  // ✅ 이동이 실제로 끝났을 때 실행
+  useEffect(() => {
+    if (location.pathname === '/' && location.state?.scroll === 'shelter') {
+      setTimeout(() => {
+        window.scrollTo({
+          top: 840, // 원하는 위치
+          behavior: 'smooth',
+        });
+      }, 200); // 렌더 완료 후 실행
+    }
+  }, [location]);
 
   return (
     <>
@@ -47,41 +67,68 @@ export default function Header() {
           ×
         </button>
         <nav className="menu_nav">
-          <button
-            onClick={() => {
-              navigate('/');
-              setMenuOpen(false);
-            }}
-          >
-            홈 
-          </button>
+          {/* 상단 고정 */}
+          <div className="menu_top_actions">
+            <button
+              onClick={() => {
+                navigate('/');
+                setMenuOpen(false);
+              }}
+            >
+              <img src={homeIcon} alt="홈" className="home_icon" />
+            </button>
+
+            {!user && (
+              <button
+                onClick={() => {
+                  toggleLogin();
+                  setMenuOpen(false);
+                }}
+              >
+                로그인
+              </button>
+            )}
+
+            {user && (
+              <>
+                <button
+                  onClick={() => {
+                    navigate('/mypage');
+                    setMenuOpen(false);
+                  }}
+                >
+                  마이페이지
+                </button>
+
+                <button
+                  onClick={async () => {
+                    await useAuthStore.getState().logout();
+                    alert('로그아웃 되었습니다.');
+                    setMenuOpen(false);
+                  }}
+                >
+                  로그아웃
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* 구분선: 입양 전 */}
+          <div className="menu_section_title">- 입양 전 -</div>
+
+          <button onClick={handleGoToShelter}>보호소</button>
 
           <button
             onClick={() => {
-              navigate('/mypage');
+              navigate('/recommend');
               setMenuOpen(false);
             }}
           >
-            마이페이지
-          </button>
-          
-          <button
-            onClick={() => {
-              navigate('/');
-              setMenuOpen(false);
-            }}
-          >
-            보호소 
+            반려동물 추천
           </button>
 
-          <button
-            onClick={() => {
-              navigate('/favorites');
-              setMenuOpen(false);
-            }}
-          >
-            즐겨찾기 
-          </button>
+          {/* 구분선: 입양 후 */}
+          <div className="menu_section_title">- 입양 후 -</div>
 
           <button
             onClick={() => {
@@ -94,50 +141,21 @@ export default function Header() {
 
           <button
             onClick={() => {
-              navigate('/surveyform', { state: { user } });
+              navigate('/animal-age');
               setMenuOpen(false);
             }}
           >
-            입양 설문조사
+            사람 나이로 보는 동물 나이
           </button>
 
           <button
             onClick={() => {
-              navigate('/agecalculator');
+              navigate('/obesity');
               setMenuOpen(false);
             }}
           >
-            사람 나이로 보는 동물 나이 
+            동물의 비만도 계산기
           </button>
-
-          <button
-            onClick={() => {
-              navigate('/bmicalculator');
-              setMenuOpen(false);
-            }}
-          >
-            동물 비만도 계산기
-          </button>
-
-          {user ? (
-            <button
-              onClick={() => {
-                alert('로그아웃 기능 연결 예정');
-                setMenuOpen(false);
-              }}
-            >
-              로그아웃
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                toggleLogin();
-                setMenuOpen(false);
-              }}
-            >
-              로그인
-            </button>
-          )}
         </nav>
       </div>
 
