@@ -22,6 +22,10 @@ const dict = [
 ];
 
 export default function SurveyAnswers({ answers }) {
+  if (!answers || Object.keys(answers).length === 0) {
+    return <div className="myinfo-empty">설문 답변이 없습니다.</div>;
+  }
+
   return (
     <div className="survey-answers">
       <h4>📋 설문 응답 요약</h4>

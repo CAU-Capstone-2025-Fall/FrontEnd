@@ -122,7 +122,7 @@ export default function Header() {
             onClick={() => {
               if (!user) {
                 alert('로그인이 필요한 서비스입니다.');
-                return; // 🚫 이동 막기
+                return;
               }
               navigate('/recommend');
               setMenuOpen(false);
