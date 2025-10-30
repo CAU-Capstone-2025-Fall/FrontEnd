@@ -486,7 +486,7 @@ const CAT_BREEDS = [
 ];
 
 export default function Filters({ value, onChange, gunSuggestions }) {
-  const { species, breed, doName, gun, sex, keyword, neuterYn, improve } = value;
+  const { species, breed, doName, gun, sex, keyword, neuterYn, ageMin, ageMax } = value;
   const [breedFilterText, setBreedFilterText] = useState('');
 
   const gunguOptions = useMemo(() => {
@@ -511,6 +511,13 @@ export default function Filters({ value, onChange, gunSuggestions }) {
       onChange({ breed: '' });
     }
   }, [breedOptions, breed, onChange]);
+
+  useEffect(() => {
+    const min = ((ageMin ?? 0) / 15) * 100;
+    const max = ((ageMax ?? 15) / 15) * 100;
+    document.documentElement.style.setProperty('--min', `${min}%`);
+    document.documentElement.style.setProperty('--max', `${max}%`);
+  }, [ageMin, ageMax]);
 
   // 셀렉트에 줄 value: 없으면 ''로
   const safeBreedValue = breedOptions.includes(breed) ? breed : '';
@@ -634,6 +641,39 @@ export default function Filters({ value, onChange, gunSuggestions }) {
               {l}
             </label>
           ))}
+        </div>
+      </div>
+
+      <div className="filters__group">
+        <label>나이 (세)</label>
+        <div className="age-range-container">
+          <div className="slider-track"></div>
+          <input
+            type="range"
+            min="0"
+            max="15"
+            step="1"
+            value={ageMin ?? 0}
+            onChange={(e) => {
+              const newMin = Math.min(Number(e.target.value), ageMax ?? 15);
+              onChange({ ageMin: newMin });
+            }}
+          />
+          <input
+            type="range"
+            min="0"
+            max="15"
+            step="1"
+            value={ageMax ?? 15}
+            onChange={(e) => {
+              const newMax = Math.max(Number(e.target.value), ageMin ?? 0);
+              onChange({ ageMax: newMax });
+            }}
+          />
+          <div className="age-values">
+            {(ageMin ?? 0) === 0 ? '1세(60일 미만)' : `${ageMin}세`} ~{' '}
+            {(ageMax ?? 15) === 0 ? '1세(60일 미만)' : `${ageMax}세`}{' '}
+          </div>
         </div>
       </div>
     </aside>

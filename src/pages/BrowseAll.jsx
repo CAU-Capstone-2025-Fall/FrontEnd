@@ -18,6 +18,8 @@ export default function BrowseAll() {
     gun: '',
     sex: '',
     neuterYn: '',
+    ageMin: 0,
+    ageMax: 15,
   });
   const [animals, setAnimals] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -50,6 +52,8 @@ export default function BrowseAll() {
       q.org_name = `${filters.doName} ${filters.gun}`;
     if (filters.sex) q.sex_cd = filters.sex;
     if (filters.neuterYn) q.neuterYn = filters.neuterYn;
+    if (filters.ageMax) q.start_age = filters.ageMin;
+    if (filters.ageMax) q.end_age = filters.ageMax;
     return q;
   };
 
