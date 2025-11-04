@@ -7,7 +7,7 @@ function displayAge(ageStr) {
   if (m) {
     const birthYear = parseInt(m[1], 10);
     const y = new Date().getFullYear();
-    let years = y - birthYear;
+    let years = y - birthYear + 1;
     if (years <= 0) years = 1;
     return `${years}살${has60 ? '(60일미만)' : ''}`;
   }
