@@ -6,7 +6,7 @@ const dict = [
   { additionalNote: '기타 사항' },
   { address: '주소' },
   { allergyAnimal: '알레르기 동물' },
-  { budget: '돌봄 예산' },
+  { budget: '가구 소득' },
   { careTime: '돌봄 시간' },
   { dailyHomeTime: '재택 시간' },
   { expectations: '선호 특성' },
@@ -19,6 +19,13 @@ const dict = [
   { preferredSize: '선호 크기' },
   { residenceType: '주거 형태' },
   { specialEnvironment: '특별 환경' },
+  { petHistory: '반려동물 양육 경험' },
+  { currentPets: '현재 양육중인 반려동물' },
+  { age: '나이' },
+  { houseSize: '주택 규모' },
+  { sex : '성별' },
+  { job : '직업' },
+  { wantingPet : '반려동물 입양 의사' },
 ];
 
 export default function SurveyAnswers({ answers }) {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import '../css/Containers/LoginContainer.css';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
+import { useNavigate } from 'react-router-dom';
 
 const USER_MIN = 5,
   USER_MAX = 10;
@@ -12,6 +13,7 @@ const trim = (s: string | null | undefined): string => (s ?? '').trim();
 const LoginContainer = () => {
   const { user, login, logout, signup, msg } = useAuthStore();
   const { closeLogin } = useUIStore();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -95,6 +97,7 @@ const LoginContainer = () => {
         ) : (
           <div className="login-info">
             <p>{user} 님 로그인 중</p>
+            <button onClick={() => {navigate('/mypage'); closeLogin();}}>마이페이지</button>
             <button onClick={handleLogout}>로그아웃</button>
           </div>
         )}

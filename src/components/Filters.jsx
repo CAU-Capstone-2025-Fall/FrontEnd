@@ -673,7 +673,7 @@ export default function Filters({ value, onChange, gunSuggestions }) {
           <div className="age-values">
             {(ageMin ?? 0) === 0 ? '1세(60일 미만)' : `${ageMin}세`} ~{' '}
             {(ageMax ?? 15) === 0 ? '1세(60일 미만)' : `${ageMax}세`}{' '}
-          </div>
+          </div>  
         </div>
       </div>
     </aside>
