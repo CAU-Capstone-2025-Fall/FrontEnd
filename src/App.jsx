@@ -1,22 +1,22 @@
-import { useRef, useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 
+import AgeCalculator from './components/AgeCalculator';
+import BmiCalculator from './components/BmiCalculator';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import RescueDogCounselor from './components/RescueDogCounselor';
+import SurveyForm from './components/SurveyForm';
 import LoginContainer from './containers/LoginContainer';
 import './index.css';
 import BrowseAll from './pages/BrowseAll';
-import ReviewPage from './pages/ReviewPage';
 import ImageEditTest from './pages/ImageEditTest';
-import SurveyForm from './components/SurveyForm';
-import { useUIStore } from './store/useUIStore';
-import AgeCalculator from './components/AgeCalculator';
-import BmiCalculator from './components/BmiCalculator';
 import Mypage from './pages/Mypage';
 import RecommendPage from './pages/RecommendPage';
-
+import Report from './pages/Report';
+import ReviewPage from './pages/ReviewPage';
+import { useUIStore } from './store/useUIStore';
 export default function App() {
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const browseRef = useRef(null);
@@ -86,6 +86,7 @@ export default function App() {
             <Route path="/agecalculator" element={<AgeCalculator />} />
             <Route path="/bmicalculator" element={<BmiCalculator />} />
             <Route path="/recommend" element={<SurveyForm user={user} />} />
+            <Route path="/report" element={<Report user={user} />} />
           </Routes>
         </main>
 
