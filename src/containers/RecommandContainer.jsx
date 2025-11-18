@@ -57,30 +57,22 @@ const LABEL_KO = {
 function cleanLimeKey(key) {
   return key.replace(/<=.*$/, '').replace(/>.*$/, '').trim();
 }
+
 function getPercentileMessage(p) {
-  if (p >= 85) {
-    // 매우 안전
-    return `상위 ${p}%로, 매우 안전한 편입니다.`;
-  } else if (p >= 70) {
-    // 안전
-    return `상위 ${p}%로, 비교적 안전한 수준입니다.`;
-  } else if (p >= 50) {
-    // 평균
-    return `전체 사용자 중 ${p}% 수준으로, 보통 위험도입니다.`;
-  } else if (p >= 30) {
-    // 주의
+  if (p >= 85) return `상위 ${p}%로, 매우 안전한 편입니다.`;
+  if (p >= 70) return `상위 ${p}%로, 비교적 안전한 수준입니다.`;
+  if (p >= 50) return `전체 사용자 중 ${p}% 수준으로, 보통 위험도입니다.`;
+  if (p >= 30) {
     const riskP = 100 - p;
     return `전체 대비 하위 ${riskP}%로, 주의가 필요한 수준입니다.`;
-  } else {
-    // 매우 위험
-    const riskP = 100 - p;
-    return `전체 대비 하위 ${riskP}% 위험군으로, 상당히 높은 위험 수준입니다.`;
   }
+  const riskP = 100 - p;
+  return `전체 대비 하위 ${riskP}% 위험군으로, 상당히 높은 위험 수준입니다.`;
 }
 
+// LIME 필터
 function filterLime(lime, raw) {
   const result = [];
-
   Object.entries(lime).forEach(([rawKey, weight]) => {
     const cleanKey = cleanLimeKey(rawKey);
     const mapped = FEATURE_MAP[cleanKey];
@@ -98,6 +90,34 @@ function filterLime(lime, raw) {
   return result;
 }
 
+// LIME 강도별 CSS class
+function getLimeClass(weight) {
+  const absVal = Math.abs(weight);
+  if (absVal >= 0.2) {
+    return weight > 0 ? 'lime-item lime-strong-pos' : 'lime-item lime-strong-neg';
+  } else if (absVal >= 0.1) {
+    return weight > 0 ? 'lime-item lime-pos' : 'lime-item lime-neg';
+  } else {
+    return weight > 0 ? 'lime-item lime-weak-pos' : 'lime-item lime-weak-neg';
+  }
+}
+
+// Interaction 강도별 CSS class
+function getInteractionClass(score) {
+  const absVal = Math.abs(score);
+  if (absVal >= 0.2) {
+    return score > 0
+      ? 'interaction-item interaction-strong-pos'
+      : 'interaction-item interaction-strong-neg';
+  } else if (absVal >= 0.1) {
+    return score > 0 ? 'interaction-item interaction-pos' : 'interaction-item interaction-neg';
+  } else {
+    return score > 0
+      ? 'interaction-item interaction-weak-pos'
+      : 'interaction-item interaction-weak-neg';
+  }
+}
+
 export default function RecommandContainer({ user }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -112,9 +132,9 @@ export default function RecommandContainer({ user }) {
         if (!u) return setErr('로그인이 필요합니다.');
 
         const res = await getReport(u);
-        console.log(res);
         if (!res || res.success !== true) return setErr('리포트가 없습니다.');
 
+        console.log('REPORT', res.data);
         setReport(res.data);
       } catch (e) {
         setErr('불러오기 실패: ' + e.message);
@@ -132,6 +152,8 @@ export default function RecommandContainer({ user }) {
 
   const raw = report.raw_input || {};
   const lime = report.lime || {};
+  const interaction = report.interaction || [];
+
   const prob = report.probability || 0;
   const percentile = report.percentile ?? null;
   const summary = report.summary || null;
@@ -144,7 +166,6 @@ export default function RecommandContainer({ user }) {
     .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
     .slice(0, 5);
 
-  // 위험도 색상
   const riskLevel = prob < 0.3 ? 'low' : prob < 0.6 ? 'mid' : 'high';
 
   return (
@@ -175,10 +196,12 @@ export default function RecommandContainer({ user }) {
           </div>
         </section>
       )}
+
       {/* -------------------------------- Summary */}
       {summary && (
         <section className="report-card summary-card">
           <h3>분석 요약</h3>
+          {/* GPT가 두 단락으로 주면 CSS에서 pre-line으로 줄바꿈 유지 */}
           <p className="summary-text">{summary}</p>
         </section>
       )}
@@ -199,13 +222,33 @@ export default function RecommandContainer({ user }) {
         </section>
       )}
 
+      {/* -------------------------------- Interaction Top 3 */}
+      {interaction.length > 0 && (
+        <section className="report-card">
+          <h3>주요 상호작용 요인 Top 3</h3>
+
+          <ul className="interaction-list">
+            {interaction.map(([groups, score]) => {
+              const cls = getInteractionClass(score);
+              return (
+                <li key={groups.join('-')} className={cls}>
+                  <span className="interaction-label">{groups.join(' × ')}</span>
+                  <span className="interaction-score">{score.toFixed(4)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
       {/* -------------------------------- LIME */}
       <section className="report-card">
         <h3>LIME 영향 요인 Top 5</h3>
         <ul className="lime-list">
           {limeFiltered.map(([feat, weight]) => (
-            <li key={feat} className={`lime-item ${weight > 0 ? 'lime-pos' : 'lime-neg'}`}>
-              {feat}: <b>{weight.toFixed(4)}</b>
+            <li key={feat} className={getLimeClass(weight)}>
+              <span>{feat}</span>
+              <b>{weight.toFixed(4)}</b>
             </li>
           ))}
         </ul>

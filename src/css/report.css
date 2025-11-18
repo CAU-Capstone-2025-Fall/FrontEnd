@@ -1,13 +1,53 @@
 /* src/css/report.css */
 
 /* ===============================
+   Design Tokens (전체 톤 정리)
+=============================== */
+:root {
+  /* 배경/테두리 */
+  --bg-page: #fafbff;
+  --bg-card: #ffffff;
+  --border-soft: #e9e9e9;
+  --border-strong: #d0d7e2;
+
+  /* 텍스트 */
+  --text-main: #222222;
+  --text-sub: #555555;
+  --text-muted: #888888;
+
+  /* 포인트 컬러 */
+  --primary: #4a8dff;
+  --primary-soft: #f2f6ff;
+
+  /* 위험도 색상 */
+  --risk-low: #2ecc71;
+  --risk-mid: #ff9800;
+  --risk-high: #e74c3c;
+
+  /* 영향(위험 증가/감소) 팔레트 */
+  --pos-strong-bg: #f8c4c4;
+  --pos-strong-text: #b71c1c;
+  --pos-mid-bg: #fdeaea;
+  --pos-mid-text: #c62828;
+  --pos-weak-bg: #fff6f6;
+  --pos-weak-text: #d32f2f;
+
+  --neg-strong-bg: #c8e6c9;
+  --neg-strong-text: #1b5e20;
+  --neg-mid-bg: #eaf7ea;
+  --neg-mid-text: #2e7d32;
+  --neg-weak-bg: #f5fcf5;
+  --neg-weak-text: #388e3c;
+}
+
+/* ===============================
    Global Wrapper
 =============================== */
 .report-wrapper {
   max-width: 760px;
-  margin: 50px auto;
+  margin: 48px auto 64px;
   padding: 24px;
-  background: #fafbff;
+  background: var(--bg-page);
   border-radius: 16px;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
   animation: fadeIn 0.4s ease;
@@ -29,24 +69,27 @@
   font-weight: 700;
   text-align: center;
   margin-bottom: 30px;
-  color: #222;
+  color: var(--text-main);
 }
 
 /* ===============================
    Card
 =============================== */
 .report-card {
-  background: #ffffff;
-  padding: 22px;
+  background: var(--bg-card);
+  padding: 22px 22px 20px;
   border-radius: 14px;
   margin-top: 26px;
-  border: 1px solid #e9e9e9;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .report-card:hover {
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
 .report-card h3 {
@@ -65,14 +108,18 @@
   margin-bottom: 10px;
 }
 
+.prob-result b {
+  font-size: 24px;
+}
+
 .prob-result.low b {
-  color: #2ecc71;
+  color: var(--risk-low);
 }
 .prob-result.mid b {
-  color: #ff9800;
+  color: var(--risk-mid);
 }
 .prob-result.high b {
-  color: #e74c3c;
+  color: var(--risk-high);
 }
 
 .prob-bar {
@@ -86,7 +133,7 @@
 
 .prob-fill {
   height: 100%;
-  background: linear-gradient(90deg, #ff6f6f, #ff4343);
+  background: linear-gradient(90deg, #ffb3b3, #ff6f6f, #ff4343);
   border-radius: 10px;
   transition: width 0.6s ease-out;
 }
@@ -96,14 +143,15 @@
 =============================== */
 
 .summary-card {
-  background: #f2f8ff;
-  border-left: 6px solid #4aa8ff;
+  background: var(--primary-soft);
+  border-left: 6px solid var(--primary);
 }
 
 .summary-text {
   font-size: 15px;
   line-height: 1.7;
-  color: #333;
+  color: var(--text-main);
+  white-space: pre-line; /* 두 단락 출력 시 줄바꿈 유지 */
 }
 
 /* ===============================
@@ -140,57 +188,88 @@
   border-radius: 12px;
   border: 1px solid #e0e0e0;
   margin-bottom: 14px;
-  transition: box-shadow 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .rec-item:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
 .rec-title {
   font-weight: 700;
-  font-size: 16px;
-  color: #222;
+  font-size: 15px;
+  color: var(--text-main);
   margin-bottom: 6px;
 }
 
 .rec-detail {
-  color: #555;
+  color: var(--text-sub);
   line-height: 1.6;
   font-size: 14px;
 }
 
 /* ===============================
-   LIME List
+   LIME List (강도 단계 반영)
 =============================== */
+
 .lime-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .lime-item {
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
   border-radius: 10px;
   font-weight: 500;
   font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* 🔥 양수 = 위험 상승 → 빨강 */
+/* 기본 양수/음수 (mid 단계 기본값) */
 .lime-pos {
-  background: #fdeaea;
-  color: #c62828;
+  background: var(--pos-mid-bg);
+  color: var(--pos-mid-text);
+}
+.lime-neg {
+  background: var(--neg-mid-bg);
+  color: var(--neg-mid-text);
 }
 
-/* 🔥 음수 = 위험 감소 → 초록 */
-.lime-neg {
-  background: #eaf7ea;
-  color: #2e7d32;
+/* 강한 영향 */
+.lime-strong-pos {
+  background: var(--pos-strong-bg);
+  color: var(--pos-strong-text);
+  font-weight: 700;
+}
+.lime-strong-neg {
+  background: var(--neg-strong-bg);
+  color: var(--neg-strong-text);
+  font-weight: 700;
+}
+
+/* 약한 영향 (거의 중립에 가까운 톤) */
+.lime-weak-pos {
+  background: var(--pos-weak-bg);
+  color: var(--pos-weak-text);
+  font-weight: 500;
+}
+.lime-weak-neg {
+  background: var(--neg-weak-bg);
+  color: var(--neg-weak-text);
+  font-weight: 500;
 }
 
 /* ===============================
    Input Info Grid
 =============================== */
+
 .input-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -199,33 +278,116 @@
 
 .input-item {
   background: #fff;
-  padding: 14px;
+  padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid #e5e5e5;
   font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .input-item.highlight {
   border-color: #ffab40;
-  background: #fff5e6;
+  background: #fff8ec;
+  box-shadow: 0 0 0 1px rgba(255, 171, 64, 0.3);
 }
 
 .input-label {
   font-weight: 700;
-  margin-bottom: 4px;
-  display: block;
+  color: var(--text-main);
 }
 
 .input-value {
-  color: #444;
+  color: var(--text-sub);
   font-size: 14px;
+}
+
+/* ===============================
+   Interaction (Pairwise)
+=============================== */
+
+.interaction-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 8px;
+}
+
+.interaction-item {
+  padding: 9px 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  align-items: center;
+  background: transparent; /* base: 색은 강도 클래스에서 */
+}
+
+/* 기본 pos/neg (mid 단계) */
+.interaction-pos {
+  background: var(--pos-mid-bg);
+  color: var(--pos-mid-text);
+  border: 1px solid #f5b5b5;
+}
+.interaction-neg {
+  background: var(--neg-mid-bg);
+  color: var(--neg-mid-text);
+  border: 1px solid #b6e1b6;
+}
+
+/* 강한 영향 */
+.interaction-strong-pos {
+  background: var(--pos-strong-bg);
+  color: var(--pos-strong-text);
+  border: 1px solid #e57373;
+  font-weight: 700;
+}
+.interaction-strong-neg {
+  background: var(--neg-strong-bg);
+  color: var(--neg-strong-text);
+  border: 1px solid #81c784;
+  font-weight: 700;
+}
+
+/* 약한 영향 */
+.interaction-weak-pos {
+  background: var(--pos-weak-bg);
+  color: var(--pos-weak-text);
+  border: 1px solid #ffebee;
+  font-weight: 500;
+}
+.interaction-weak-neg {
+  background: var(--neg-weak-bg);
+  color: var(--neg-weak-text);
+  border: 1px solid #e8f5e9;
+  font-weight: 500;
+}
+
+.interaction-label {
+  font-weight: 600;
+}
+
+.interaction-score {
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 /* ===============================
    Responsive
 =============================== */
 @media (max-width: 480px) {
+  .report-wrapper {
+    margin: 32px 12px 40px;
+    padding: 18px;
+  }
+
   .input-grid {
     grid-template-columns: 1fr;
+  }
+
+  .report-card {
+    padding: 18px 16px 16px;
   }
 }
