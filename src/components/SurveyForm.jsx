@@ -1,38 +1,127 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-const api = axios.create({
-  baseURL: '/api/userinfo/survey',
-  withCredentials: true,
-});
-
-const A_processed = {
+// SurveyForm.jsx
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // 🔥 추
+import { encodeA } from '../api/encode.js';
+import { saveSurvey } from '../api/survey';
+// -------------------------
+// 1) A 초기값 (16개)
+// -------------------------
+const initialA = {
   age: '0',
   familyCount: '0',
   houseSize: '0',
   budget: '0',
+
   sex1: '0',
   sex2: '0',
+
   residenceType1: '0',
   residenceType2: '0',
   residenceType3: '0',
   residenceType4: '0',
+
+  wantingPet: '0',
+
   job1: '0',
-  job10: '0',
   job2: '0',
-  job3: '0',
-  job4: '0',
-  job5: '0',
-  job6: '0',
   job7: '0',
   job8: '0',
-  job9: '0',
-  petHistory1: '0',
-  petHistory2: '0',
-  petHistory3: '0',
-  wantingPet: '0',
+  job10: '0',
 };
 
+// -------------------------
+// 2) 매핑 테이블
+// -------------------------
+const HOUSE_SIZE_MAP = {
+  '10평 미만': '5',
+  '10평 ~ 20평': '15',
+  '20평 ~ 30평': '25',
+  '30평 ~ 40평': '35',
+  '40평 ~ 50평': '45',
+  '50평 이상': '60',
+};
+
+const BUDGET_MAP = {
+  '100만원 미만': '50',
+  '100만원 ~ 199만원': '150',
+  '200만원 ~ 299만원': '250',
+  '300만원 ~ 399만원': '350',
+  '400만원 ~ 499만원': '450',
+  '500만원 ~ 599만원': '550',
+  '600만원 ~ 699만원': '650',
+  '700만원 이상': '750',
+};
+
+const RESIDENCE_MAP = {
+  아파트: 'residenceType1',
+  '단독/다가구 주택': 'residenceType2',
+  '연립/빌라/다세대 주택': 'residenceType3',
+  기타: 'residenceType4',
+};
+
+// 🔥 job 10개 → 모델 5개로 그룹핑
+const JOB_GROUP = {
+  '경영/관리직': 'job1',
+  전문직: 'job1',
+  사무직: 'job1',
+
+  전문기술직: 'job2',
+  '판매/서비스직': 'job2',
+  '단순노무/생산/단순기술직': 'job2',
+
+  자영업: 'job7',
+
+  주부: 'job8',
+  학생: 'job8',
+
+  기타: 'job10',
+};
+
+const WANTING_PET_MAP = {
+  '전혀 의향이 없다': '0.2',
+  '별로 의향이 없다': '0.4',
+  보통이다: '0.6',
+  '다소 의향이 있다': '0.8',
+  '매우 의향이 있다': '1.0',
+};
+
+// -------------------------
+// 3) buildA()
+// -------------------------
+function buildA(d) {
+  const A = { ...initialA };
+
+  // 숫자형
+  A.age = d.age || '0';
+  A.familyCount = d.familyCount || '0';
+  A.houseSize = HOUSE_SIZE_MAP[d.houseSize] || '0';
+  A.budget = BUDGET_MAP[d.budget] || '0';
+
+  // 성별
+  if (d.sex === '남성') A.sex1 = '1';
+  if (d.sex === '여성') A.sex2 = '1';
+
+  // 주택 형태
+  if (RESIDENCE_MAP[d.residenceType]) {
+    A[RESIDENCE_MAP[d.residenceType]] = '1';
+  }
+
+  // 직업 그룹핑
+  if (JOB_GROUP[d.job]) {
+    A[JOB_GROUP[d.job]] = '1';
+  }
+
+  // 사육 의향
+  A.wantingPet = '0';
+
+  return A;
+}
+
+// -------------------------
+// Survey component
+// -------------------------
 export default function SurveyForm({ user }) {
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState({
     address: '',
     age: '',
@@ -53,190 +142,77 @@ export default function SurveyForm({ user }) {
     careTime: '',
     budget: '',
     specialEnvironment: '',
-    additionalNote: '',
     petHistory: '',
     currentPets: [],
     houseSize: '',
     wantingPet: '',
+    additionalNote: '',
   });
 
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
-  // 로그인 상태 확인
-  if (!user) return <p className="survey-alert">로그인 후 설문 이용이 가능합니다.</p>;
+  if (!user) return <p>로그인 후 이용해주세요.</p>;
 
-  // 다중 선택 처리
+  // 🔥 여기! 로딩이면 폼 전체 숨기고 로딩 UI만 보여줌
+  if (loading) {
+    return (
+      <div className="survey-loading">
+        <div className="spinner"></div>
+        <p>잠시만 기다려주세요... 리포트를 생성하는 중입니다 🐾</p>
+      </div>
+    );
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAnswers((prev) => ({ ...prev, [name]: value }));
+  };
+
   const handleMultiSelect = (e, key) => {
     const value = e.target.value;
     setAnswers((prev) =>
       e.target.checked
         ? { ...prev, [key]: [...prev[key], value] }
-        : { ...prev, [key]: prev[key].filter((item) => item !== value) }
+        : { ...prev, [key]: prev[key].filter((v) => v !== value) }
     );
   };
 
-  // 단일 입력 처리
-  const handleChange = (e) => {
-    setAnswers({ ...answers, [e.target.name]: e.target.value });
-  };
-
-  const saveA_processed = (data) => {
-    A_processed.age = data.age;
-    A_processed.familyCount = data.familyCount;
-    switch(data.houseSize){
-      case '10평 미만':
-        A_processed.houseSize = '5';
-        break;
-      case '10평 ~ 20평':
-        A_processed.houseSize = '15';
-        break;
-      case '20평 ~ 30평':
-        A_processed.houseSize = '25';
-        break;
-      case '30평 ~ 40평':
-        A_processed.houseSize = '35';
-        break;
-      case '40평 ~ 50평':
-        A_processed.houseSize = '45';
-        break;
-      case '50평 이상':
-        A_processed.houseSize = '60';
-        break;
-    }
-    switch(data.budget){
-      case '100만원 미만':
-        A_processed.budget = '50';
-        break;
-      case '100만원 ~ 199만원':
-        A_processed.budget = '150';
-        break;
-      case '200만원 ~ 299만원':
-        A_processed.budget = '250';
-        break;
-      case '300만원 ~ 399만원':
-        A_processed.budget = '350';
-        break; 
-      case '400만원 ~ 499만원':
-        A_processed.budget = '450';
-        break;
-      case '500만원 ~ 599만원':
-        A_processed.budget = '550';
-        break;
-      case '600만원 ~ 699만원':
-        A_processed.budget = '650';
-        break;
-      case '700만원 이상':
-        A_processed.budget = '750';
-        break;
-    }
-    if (data.sex === '남성') {
-      A_processed.sex1 = '1';
-    } else if (data.sex === '여성') {
-      A_processed.sex2 = '1';
-    }
-    switch(data.residenceType){
-      case '아파트':
-        A_processed.residenceType1 = '1';
-        break;
-      case '단독/다가구 주택':
-        A_processed.residenceType2 = '1';
-        break;
-      case '연립/빌라/다세대 주택':
-        A_processed.residenceType3 = '1';
-        break;
-      case '기타':
-        A_processed.residenceType4 = '1';
-        break;
-        
-    }
-    switch(data.job){
-      case '경영/관리직':
-        A_processed.job1 = '1';
-        break;
-      case '전문직':
-        A_processed.job2 = '1';
-        break;
-      case '사무직':
-        A_processed.job3 = '1';
-        break;
-      case '전문기술직':
-        A_processed.job4 = '1';
-        break;
-      case '판매/서비스직':
-        A_processed.job5 = '1';
-        break;
-      case '단순노무/생산/단순기술직':
-        A_processed.job6 = '1';
-        break;
-      case '자영업':
-        A_processed.job7 = '1';
-        break;
-      case '주부':
-        A_processed.job8 = '1';
-        break;
-      case '학생':  
-        A_processed.job9 = '1';
-        break;
-      case '기타':
-        A_processed.job10 = '1';
-        break;
-    }
-    switch(data.petHistory){
-      case '현재 반려동물을 키우고 있다':
-        A_processed.petHistory1 = '1';
-        break;
-      case '과거에는 키웠으나 현재는 키우고 있지 않다':
-        A_processed.petHistory2 = '1';
-        break;
-      case '반려동물을 키운 적 없다':
-        A_processed.petHistory3 = '1';
-        break;
-    }
-    switch(data.wantingPet){
-      case '전혀 의향이 없다':
-        A_processed.wantingPet = '0.2';
-        break;
-      case '별로 의향이 없다':
-        A_processed.wantingPet = '0.4';
-        break;
-      case '보통이다':
-        A_processed.wantingPet = '0.6';
-        break;
-      case '다소 의향이 있다':
-        A_processed.wantingPet = '0.8';
-        break;
-      case '매우 의향이 있다':
-        A_processed.wantingPet = '1.0';
-        break;
-      default:
-        A_processed.wantingPet = '0';
-        break;
-    }
-  }
-  // 제출
+  // -------------------------
+  // 제출: encodeA만 호출!
+  // -------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    saveA_processed(answers);
+
     try {
-      const res = await api.post(
-        '',
-        { userId: user, ...answers },
-        { headers: { 'Content-Type': 'application/json' } }
-      );
-      res.data.success ? setSubmitted(true) : setError(res.data.msg || '설문 저장 실패');
+      // 1) 설문 저장
+      const surveyRes = await saveSurvey(user, answers);
+      if (!surveyRes.success) throw new Error('설문 저장 실패');
+
+      // 2) A 벡터 생성
+      const A = buildA(answers);
+
+      // 3) encode → 여기서 DB 저장 끝남
+      const encoded = await encodeA(A, user);
+      if (!encoded.success) throw new Error('encode 실패');
+
+      console.log('🔥 encode + DB 저장 완료:', encoded);
+
+      setSubmitted(true);
+      // 4) 성공하면 즉시 /report로 이동
+      navigate('/report'); // 🔥 페이지 이동
     } catch (err) {
-      setError('서버 오류: ' + (err?.response?.data?.msg || err.message));
+      setError(err.message || '알 수 없는 오류 발생');
     } finally {
       setLoading(false);
     }
   };
 
   if (submitted) {
-    return <p className="survey-success">설문이 성공적으로 저장되었습니다! 감사합니다 🐾</p>;
+    return <p className="survey-success">저장 성공! 감사합니다 🐾</p>;
   }
 
   return (
@@ -327,7 +303,7 @@ export default function SurveyForm({ user }) {
       </label>
 
       <label>
-        8. 함께 사는 가족 수
+        8. 가족 구성원 수
         <input
           name="familyCount"
           type="number"
@@ -525,7 +501,7 @@ export default function SurveyForm({ user }) {
             )
           )}
         </div>
-      </label>  
+      </label>
 
       <label>
         22. 반려동물 사육의향

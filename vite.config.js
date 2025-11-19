@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
@@ -11,6 +11,10 @@ export default defineConfig({
         rewrite: (p) => p.replace(/^\/api/, ''),
       },
       '/static': {
+        target: 'http://3.38.48.153:8000',
+        changeOrigin: true,
+      },
+      '/report/': {
         target: 'http://3.38.48.153:8000',
         changeOrigin: true,
       },
