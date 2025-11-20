@@ -9,7 +9,7 @@ export default function RecommendPage() {
   return (
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
       <h2 style={{ textAlign: 'center' }}>🐾 반려동물 추천 설문</h2>
-      <SurveyForm user={user} />
+      <SurveyForm user={user.username} />
     </div>
   );
 }
