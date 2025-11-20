@@ -1,4 +1,7 @@
-export default function HeroSection({ onScrollToBrowse, onRightTile }) {
+import { useNavigate } from 'react-router-dom';
+
+export default function HeroSection({ onScrollToBrowse }) {
+  const navigate = useNavigate();
   return (
     <section className="hero">
       <div className="hero__container">
@@ -35,8 +38,8 @@ export default function HeroSection({ onScrollToBrowse, onRightTile }) {
           <button className="tile--cta tile--adopt" onClick={onScrollToBrowse}>
             <span>바로 보호소 동물 입양하러 가기</span>
           </button>
-          <button className="tile--cta tile--recommend" onClick={onRightTile}>
-            <span>보호소 동물 추천받기(다른 페이지)</span>
+          <button className="tile--cta tile--recommend" onClick={() => navigate('/recommend')}>
+            <span>설문조사하고 보호소 동물 추천받기</span>
           </button>
         </div>
       </div>

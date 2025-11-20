@@ -59,15 +59,13 @@ function cleanLimeKey(key) {
 }
 
 function getPercentileMessage(p) {
-  if (p >= 85) return `상위 ${p}%로, 매우 안전한 편입니다.`;
-  if (p >= 70) return `상위 ${p}%로, 비교적 안전한 수준입니다.`;
-  if (p >= 50) return `전체 사용자 중 ${p}% 수준으로, 보통 위험도입니다.`;
+  if (p >= 85) return `전체 사용자 중 상위 ${100 - p}%로, 매우 안전한 편입니다.`;
+  if (p >= 70) return `전체 사용자 중 상위 ${100 - p}%로, 비교적 안전한 수준입니다.`;
+  if (p >= 50) return `전체 사용자 중 ${100 - p}% 수준으로, 보통 위험도입니다.`;
   if (p >= 30) {
-    const riskP = 100 - p;
-    return `전체 대비 하위 ${riskP}%로, 주의가 필요한 수준입니다.`;
+    return `전체 대비 상위 ${100 - p}%로, 주의가 필요한 수준입니다.`;
   }
-  const riskP = 100 - p;
-  return `전체 대비 하위 ${riskP}% 위험군으로, 상당히 높은 위험 수준입니다.`;
+  return `전체 대비 하위 ${100 - p}% 위험군으로, 상당히 높은 위험 수준입니다.`;
 }
 
 // LIME 필터

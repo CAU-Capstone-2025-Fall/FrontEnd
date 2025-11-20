@@ -99,7 +99,7 @@ export default function MyPage({ user }) {
   useEffect(() => {
     async function loadSurvey() {
       try {
-        const res = await api.get(`/${user}`);
+        const res = await api.get(`/${user.username}`);
         if (res.data.success) setSurvey(res.data.data);
       } catch (e) {
         console.error('[Survey Load Error]', e);

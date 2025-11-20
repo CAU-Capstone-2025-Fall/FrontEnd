@@ -8,7 +8,7 @@ const TestChat = () => {
   const handleOpen = () => setShowCounselor(true);
   const handleClose = () => setShowCounselor(false);
 
-  return 
+  return;
 };
 
 export default TestChat;
