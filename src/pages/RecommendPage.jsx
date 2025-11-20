@@ -1,6 +1,7 @@
 import SurveyForm from '../components/SurveyForm'; 
 import Recommend from '../components/Recommend';
 import { useAuthStore } from '../store/useAuthStore';
+import RecommandContainer from '../containers/RecommandContainer';
 
 export default function RecommendPage() {
   const { user, loading } = useAuthStore();
@@ -11,6 +12,7 @@ export default function RecommendPage() {
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
       <h2 style={{ textAlign: 'center' }}>🐾 반려동물 추천 설문</h2>
       <SurveyForm user={user} />
+      <RecommandContainer user={user} />
       <Recommend user={user} />
     </div>
   );

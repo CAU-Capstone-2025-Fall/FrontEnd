@@ -1,6 +1,6 @@
 // SurveyForm.jsx
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // 🔥 추
+import { useNavigate } from 'react-router-dom'; 
 import { encodeA } from '../api/encode.js';
 import { saveSurvey } from '../api/survey';
 // -------------------------
@@ -523,6 +523,17 @@ export default function SurveyForm({ user }) {
           onChange={handleChange}
           rows={3}
           placeholder="궁금한 점이나 요청사항을 자유롭게 적어주세요."
+        />
+      </label>
+
+            <label>
+        24. 키워드 기반 반려동물 추천
+        <textarea
+          name="keywordRecommendation"
+          value={answers.keywordRecommendation}
+          onChange={handleChange}
+          rows={3}
+          placeholder="원하는 반려동물의 특징을 입력하세요."
         />
       </label>
 
