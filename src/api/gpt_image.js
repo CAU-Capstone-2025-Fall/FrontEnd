@@ -2,16 +2,11 @@
 
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: '/api',
-  withCredentials: true,
-});
-
 export const cleanImage = async (file) => {
   const formData = new FormData();
   formData.append('file', file);
 
-  const res = await api.post('/gpt-image/clean', formData, {
+  const res = await axios.post('/gpt-image/clean', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 

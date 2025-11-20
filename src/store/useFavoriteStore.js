@@ -48,26 +48,25 @@ export const useFavoriteStore = create((set, get) => ({
     if (get()._wired) return;
     set({ _wired: true });
 
-    // 로컬스토리지 먼저 반영
+    // (A) 부팅 시 즉시 로컬 캐시 반영 (잠깐이라도 보여야 한다면 유지, 아니면 주석 처리)
     get().initFromStorage();
 
-    // ✔ 로그인 여부는 서버에 묻지 말고 Zustand state로 판단
-    const authState = useAuthStore.getState();
-    const user = authState.user;
-
-    if (!user) {
-      // 로그인 안 된 상태면 서버에 절대 요청 보내지 말기!
-      set({ ids: [], map: {} });
-      get().clearStorage();
-      return;
-    }
-
-    // ✔ 여기서만 서버 요청!
+    // (B) 로그인 여부 확인 후 초기 세팅
     (async () => {
       try {
-        await get().loadFromServer();
-        get().saveToStorage();
-      } catch {
+        const auth = useAuthStore.getState();
+        const user = await auth.ensureAuthed(); // ✅ 최신 로그인 상태 확인
+
+        if (user) {
+          await get().loadFromServer();
+          get().saveToStorage();
+        } else {
+          set({ ids: [], map: {} });
+          get().clearStorage();
+        }
+      } catch (err) {
+        console.warn('Auth check failed during wireAuth()', err);
+        // 인증 실패 시에도 초기화
         set({ ids: [], map: {} });
         get().clearStorage();
       }

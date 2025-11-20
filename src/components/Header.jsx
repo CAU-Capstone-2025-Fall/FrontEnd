@@ -45,10 +45,9 @@ export default function Header() {
           </a>
 
           <div className="site__actions">
-            {user?.role === 'admin' && <button onClick={() => navigate('/admin')}>관리자</button>}
             {/* 로그인 */}
             <button className="login_button" onClick={toggleLogin}>
-              {user ? `${user.username}님` : '로그인'}
+              {user ? `${user}님` : '로그인'}
             </button>
 
             <button

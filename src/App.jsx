@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 
-import './index.css';
 import AgeCalculator from './components/AgeCalculator';
 import BmiCalculator from './components/BmiCalculator';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import RescueDogCounselor from './components/RescueDogCounselor';
-import AdminRoute from './components/AdminRoute';
+import SurveyForm from './components/SurveyForm';
 import LoginContainer from './containers/LoginContainer';
+import './index.css';
 import BrowseAll from './pages/BrowseAll';
 import ImageEditTest from './pages/ImageEditTest';
 import Mypage from './pages/Mypage';
@@ -27,7 +27,7 @@ export default function App() {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   // 스크롤 감지
   useEffect(() => {
@@ -54,7 +54,6 @@ export default function App() {
     <Router>
       <div className="app">
         <Header />
-
         <main>
           <Routes>
             {/* 메인 페이지 */}
@@ -62,7 +61,10 @@ export default function App() {
               path="/"
               element={
                 <>
-                  <HeroSection onScrollToBrowse={scrollToBrowse} />
+                  <HeroSection
+                    onScrollToBrowse={scrollToBrowse}
+                    onRightTile={() => alert('아직 준비 중입니다!')}
+                  />
                   <div ref={browseRef} style={{ scrollMarginTop: '80px' }}>
                     <BrowseAll favorites={favorites} setFavorites={setFavorites} />
                   </div>
@@ -71,14 +73,7 @@ export default function App() {
             />
 
             {/* 이미지 편집 테스트 페이지 */}
-            <Route
-              path="/admin"
-              element={
-                <AdminRoute>
-                  <ImageEditTest />
-                </AdminRoute>
-              }
-            />
+            <Route path="/imageEdit" element={<ImageEditTest />} />
 
             {/* 후기 페이지 */}
             <Route path="/reviews" element={<ReviewPage />} />
@@ -90,6 +85,7 @@ export default function App() {
             {/* 기타 기능 페이지 */}
             <Route path="/agecalculator" element={<AgeCalculator />} />
             <Route path="/bmicalculator" element={<BmiCalculator />} />
+            <Route path="/recommend" element={<SurveyForm user={user} />} />
             <Route path="/report" element={<Report user={user} />} />
           </Routes>
         </main>

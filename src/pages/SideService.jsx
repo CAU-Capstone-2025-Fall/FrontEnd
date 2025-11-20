@@ -1,9 +1,9 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import AgeCalculator from '../components/AgeCalculator';
-import BmiCalculator from '../components/BmiCalculator';
-import CarePlanner from '../components/CarePlanner';
-import SurveyForm from '../components/SurveyForm';
+import React from "react";
+import { useLocation } from "react-router-dom";
+import AgeCalculator from "../components/AgeCalculator";
+import BmiCalculator from "../components/BmiCalculator";
+import CarePlanner from "../components/CarePlanner";
+import SurveyForm from "../components/SurveyForm";
 
 export default function SideService() {
   const location = useLocation();
@@ -15,7 +15,7 @@ export default function SideService() {
       <AgeCalculator />
       <BmiCalculator />
       {/* <CarePlanner /> */}
-      <SurveyForm user={user.username} />
+      <SurveyForm user={user} />
     </div>
   );
 }

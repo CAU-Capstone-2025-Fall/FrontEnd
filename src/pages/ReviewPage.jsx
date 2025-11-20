@@ -46,8 +46,7 @@ export default function ReviewPage() {
   async function handleDelete() {
     const current = await ensureAuthed(); // 최신 상태로 가드
     if (!current) return alert('로그인이 필요한 서비스입니다.');
-    if (current.username !== selected.authorId && current.role != 'admin')
-      return alert('작성자만 삭제할 수 있습니다.');
+    if (current !== selected.authorId) return alert('작성자만 삭제할 수 있습니다.');
 
     if (!window.confirm('정말 삭제하시겠어요?')) return;
     try {
@@ -106,8 +105,7 @@ export default function ReviewPage() {
           onEdit={async () => {
             const current = await ensureAuthed();
             if (!current) return alert('로그인이 필요한 서비스입니다.');
-            if (current.username !== selected.authorId && current.role != 'admin')
-              return alert('작성자만 수정할 수 있습니다.');
+            if (current !== selected.authorId) return alert('작성자만 수정할 수 있습니다.');
             setMode('edit');
           }}
           onDelete={handleDelete}

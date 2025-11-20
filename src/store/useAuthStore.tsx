@@ -7,23 +7,18 @@ import {
   signup as apiSignup,
 } from '../api/auth';
 
-type UserInfo = {
-  username: string;
-  role: string; // ⭐ admin or user
-};
-
 type AuthRequest = { username: string; password: string };
 
 type AuthState = {
-  user: UserInfo | null;
+  user: string | null;
   msg: string;
   loading: boolean;
-  hydrated: boolean;
+  hydrated: boolean; // ⭐ hydration 체크
   signup: (data: AuthRequest) => Promise<void>;
   login: (data: AuthRequest) => Promise<void>;
   logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
-  ensureAuthed: () => Promise<UserInfo | null>;
+  ensureAuthed: () => Promise<string | null>;
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -32,7 +27,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       msg: '',
       loading: false,
-      hydrated: false,
+      hydrated: false, // ⭐ 처음엔 false
 
       // -----------------------
       // 회원가입
@@ -55,23 +50,15 @@ export const useAuthStore = create<AuthState>()(
       login: async (data) => {
         set({ loading: true, msg: '' });
         try {
-          await apiLogin(data); // 세션 생성
+          await apiLogin(data); // 세션 쿠키 생성
 
-          // 서버에서 유저 정보 가져오기
+          // 서버에서 실제 유저명 가져오기
           const d = await apiCheckAuth();
+          const name = d?.user ?? ((d?.message || '').replace(' 님 환영합니다!', '') || null);
 
-          set({
-            user: {
-              username: d.user.username,
-              role: d.user.role, // ⭐ role 저장!
-            },
-            msg: '로그인 성공',
-          });
+          set({ user: name, msg: d?.message || '로그인 성공' });
         } catch (err: any) {
-          set({
-            user: null,
-            msg: err?.response?.data?.detail || '로그인 실패',
-          });
+          set({ user: null, msg: err?.response?.data?.detail || '로그인 실패' });
         } finally {
           set({ loading: false });
         }
@@ -93,29 +80,24 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // -----------------------
-      // 세션 확인
+      // 서버 세션 확인
       // -----------------------
       checkAuth: async () => {
         try {
           const d = await apiCheckAuth();
+          const name = d?.user ?? ((d?.message || '').replace(' 님 환영합니다!', '') || null);
 
-          set({
-            user: {
-              username: d.user.username,
-              role: d.user.role, // ⭐ role 다시 동기화
-            },
-            msg: '로그인 상태 확인 완료',
-          });
+          set({ user: name, msg: '로그인 상태 확인 완료' });
         } catch {
           set({ user: null, msg: '로그인 필요' });
         }
       },
 
       // -----------------------
-      // 최신 상태 보장
+      // 최신 상태 보장 (핵심)
       // -----------------------
       ensureAuthed: async () => {
-        await get().checkAuth();
+        await get().checkAuth(); // 서버와 동기화
         return get().user;
       },
     }),
@@ -123,6 +105,7 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'auth-storage',
 
+      // ⭐ hydration 완료된 후 호출됨
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.hydrated = true;

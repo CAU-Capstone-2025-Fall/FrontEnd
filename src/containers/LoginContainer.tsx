@@ -96,15 +96,8 @@ const LoginContainer = () => {
           </div>
         ) : (
           <div className="login-info">
-            <p>{user.username} 님 로그인 중</p>
-            <button
-              onClick={() => {
-                navigate('/mypage');
-                closeLogin();
-              }}
-            >
-              마이페이지
-            </button>
+            <p>{user} 님 로그인 중</p>
+            <button onClick={() => {navigate('/mypage'); closeLogin();}}>마이페이지</button>
             <button onClick={handleLogout}>로그아웃</button>
           </div>
         )}
