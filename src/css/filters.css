@@ -18,18 +18,31 @@
   background: #f9fbff;
 }
 .filters__group {
-  margin-top: 14px;
+  margin: 25px 0;
 }
-.filters__group label {
-  font-weight: 700;
+.filters__group:first-of-type {
+  margin-top: 0;
+}
+.filters__group > label {
+  text-align: center;
+  width: 100%;
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 .radios {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
+.radios label {
+  text-align: left;
+  margin-bottom: 0;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
 .radios input {
   margin-right: 6px;
 }
@@ -95,4 +108,84 @@
   text-align: center;
   font-size: 0.95rem;
   color: #444;
+}
+
+/* =========================================================
+   AI 토글 버튼 (필터 패널 상단)
+========================================================= */
+.ai-toggle-group {
+  margin-top: 0; /* 최상단이므로 margin 제거 */
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ai-toggle-group label {
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.ai-toggle-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid var(--line);
+  background: #f3f6ff;
+  color: var(--text);
+}
+
+.ai-toggle-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+/* --- ON / OFF 상태 색감 --- */
+
+.ai-toggle-btn.on {
+  background: linear-gradient(135deg, #ff8b3d, #ff6ec7, #6f9dff);
+  background-size: 200% 200%;
+  animation: aiGradientShift 5s ease infinite;
+
+  color: #fff;
+  border: none;
+  box-shadow:
+    0 0 12px rgba(255, 142, 85, 0.45),
+    0 0 20px rgba(115, 155, 255, 0.35);
+
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.ai-toggle-btn.on:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 14px rgba(255, 142, 85, 0.55),
+    0 0 28px rgba(115, 155, 255, 0.45);
+}
+
+.ai-toggle-btn.off {
+  background: #f3f6ff;
+  border: 1px solid var(--line);
+  color: var(--text-soft);
+}
+
+.ai-toggle-btn.off:hover {
+  background: #e9eef9;
+  transform: translateY(-1px);
+}
+
+@keyframes aiGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

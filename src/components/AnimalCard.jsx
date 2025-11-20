@@ -14,11 +14,15 @@ function displayAge(ageStr) {
   return ageStr.trim();
 }
 
-export default function AnimalCard({ animal, onOpen, onToggleFav, isFav }) {
+export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode }) {
+  const imgSrc = aiMode ? animal.createdImg || animal.popfile1 : animal.popfile1;
+  const isAIImage = aiMode && animal.createdImg;
   return (
     <div className="card">
       <div className="card__imgWrap" onClick={() => onOpen(animal)} role="button">
-        <img src={animal.popfile1} alt={animal.kindNm || 'animal'} />
+        <img src={imgSrc} alt={animal.kindNm || 'animal'} />
+
+        {isAIImage && <span className="ai-generated-tag">AI 생성 이미지</span>}
       </div>
 
       <button
