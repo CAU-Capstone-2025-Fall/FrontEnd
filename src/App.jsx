@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 
+import './index.css';
 import AgeCalculator from './components/AgeCalculator';
 import BmiCalculator from './components/BmiCalculator';
 import Header from './components/Header';
@@ -9,8 +10,6 @@ import HeroSection from './components/HeroSection';
 import RescueDogCounselor from './components/RescueDogCounselor';
 import SurveyForm from './components/SurveyForm';
 import LoginContainer from './containers/LoginContainer';
-import './index.css';
-import './css/base.css';
 import BrowseAll from './pages/BrowseAll';
 import ImageEditTest from './pages/ImageEditTest';
 import Mypage from './pages/Mypage';
