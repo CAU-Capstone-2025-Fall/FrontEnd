@@ -10,6 +10,7 @@ import RescueDogCounselor from './components/RescueDogCounselor';
 import SurveyForm from './components/SurveyForm';
 import LoginContainer from './containers/LoginContainer';
 import './index.css';
+import './css/base.css';
 import BrowseAll from './pages/BrowseAll';
 import ImageEditTest from './pages/ImageEditTest';
 import Mypage from './pages/Mypage';
