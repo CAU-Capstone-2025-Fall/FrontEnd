@@ -20,6 +20,7 @@ export default function BrowseAll() {
     neuterYn: '',
     ageMin: 0,
     ageMax: 15,
+    aiMode: true,
   });
   const [animals, setAnimals] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -135,6 +136,7 @@ export default function BrowseAll() {
                 isFav={favorites.includes(a.desertionNo)}
                 onOpen={setSelected}
                 onToggleFav={() => toggle(a)}
+                aiMode={filters.aiMode}
               />
             ))}
 

@@ -486,7 +486,7 @@ const CAT_BREEDS = [
 ];
 
 export default function Filters({ value, onChange, gunSuggestions }) {
-  const { species, breed, doName, gun, sex, keyword, neuterYn, ageMin, ageMax } = value;
+  const { species, breed, doName, gun, sex, aiMode, neuterYn, ageMin, ageMax } = value;
   const [breedFilterText, setBreedFilterText] = useState('');
 
   const gunguOptions = useMemo(() => {
@@ -525,6 +525,15 @@ export default function Filters({ value, onChange, gunSuggestions }) {
   return (
     <aside className="filters">
       <div className="filters__group">
+        <div className="filters__group ai-toggle-group">
+          <label>AI 이미지</label>
+          <button
+            className={`ai-toggle-btn ${aiMode ? 'on' : 'off'}`}
+            onClick={() => onChange({ aiMode: !aiMode })}
+          >
+            {aiMode ? '(ON)' : '(OFF)'}
+          </button>
+        </div>
         <label>축종</label>
         <select
           value={species}
@@ -673,7 +682,7 @@ export default function Filters({ value, onChange, gunSuggestions }) {
           <div className="age-values">
             {(ageMin ?? 0) === 0 ? '1세(60일 미만)' : `${ageMin}세`} ~{' '}
             {(ageMax ?? 15) === 0 ? '1세(60일 미만)' : `${ageMax}세`}{' '}
-          </div>  
+          </div>
         </div>
       </div>
     </aside>
