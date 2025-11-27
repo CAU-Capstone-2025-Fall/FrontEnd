@@ -1,26 +1,15 @@
-// src/api/gpt_image.js
-
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/api/gpt-image/clean',
   withCredentials: true,
 });
 
-export const cleanImage = async (file) => {
-  const formData = new FormData();
-  formData.append('file', file);
+export async function cleanImage(desertionNo) {
+  const form = new URLSearchParams();
+  form.append('desertionNo', String(desertionNo));
 
-  const res = await api.post('/gpt-image/clean', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const res = await api.post('', form);
 
-  if (res.data.image_base64) {
-    return `data:image/png;base64,${res.data.image_base64}`;
-  }
-  if (res.data.image_url) {
-    return res.data.image_url;
-  }
-
-  throw new Error('이미지 생성 실패');
-};
+  return res.data;
+}
