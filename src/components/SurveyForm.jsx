@@ -526,17 +526,6 @@ export default function SurveyForm({ user }) {
         />
       </label>
 
-            <label>
-        24. 키워드 기반 반려동물 추천
-        <textarea
-          name="keywordRecommendation"
-          value={answers.keywordRecommendation}
-          onChange={handleChange}
-          rows={3}
-          placeholder="원하는 반려동물의 특징을 입력하세요."
-        />
-      </label>
-
       <button type="submit" disabled={loading}>
         {loading ? '저장 중...' : '제출'}
       </button>

@@ -70,8 +70,8 @@ export default function Recommend({ user }) {
   }
 
   return (
-    <div>
-      <form className="survey-section" onSubmit={handleSubmit}>
+    <div className="recommend" style={{ display: 'contents' }}>
+      <form className="survey-section" onSubmit={handleSubmit} style={{ minWidth: '500px' }}>
         <h3>키워드 기반 반려동물 추천</h3>
         <label>원하는 반려동물의 특징을 입력하세요:</label>
         <input
@@ -87,32 +87,30 @@ export default function Recommend({ user }) {
         </button>
       </form>
       <form className="browse-section">
-        <div className="">
-          <section style={{ marginTop: '40px' }}>
-            { animals.length > 0 ? (
-            <div className="result-shell">
-              <div className="result-content grid">
-                {animals.map((a) => (
-                  <AnimalCard
-                    key={a.desertionNo}
-                    animal={a}
-                    isFav={favorites.includes(a.desertionNo)}
-                    onOpen={setSelected}
-                    onToggleFav={() => toggle(a)}
-                  />
-                ))}
-              </div>
+        <section style={{ marginTop: '40px' }}>
+          { animals.length > 0 ? (
+          <div className="result-shell">
+            <div className="result-content grid">
+              {animals.map((a) => (
+                <AnimalCard
+                  key={a.desertionNo}
+                  animal={a}
+                  isFav={favorites.includes(a.desertionNo)}
+                  onOpen={setSelected}
+                  onToggleFav={() => toggle(a)}
+                />
+              ))}
             </div>
-            ) : (
-            <div className="result-shell">
-              <div className="result">
-              </div>
+          </div>
+          ) : (
+          <div className="result-shell">
+            <div className="result">
             </div>
-            )}
-            <AnimalDetail animal={selected} onClose={() => setSelected(null)} />
-          </section>
-          {error && <p className="survey-error">{error}</p>}
-        </div>
+          </div>
+          )}
+          <AnimalDetail animal={selected} onClose={() => setSelected(null)} />
+        </section>
+        {error && <p className="survey-error">{error}</p>}
       </form>
     </div>
   );

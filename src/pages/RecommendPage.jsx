@@ -10,10 +10,12 @@ export default function RecommendPage() {
 
   return (
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
-      <h2 style={{ textAlign: 'center' }}>🐾 반려동물 추천 설문</h2>
-      <SurveyForm user={user.username} />
-      <RecommandContainer user={user.username} />
-      <Recommend user={user.username} />
+      <h2 style={{ textAlign: 'center' }}>🐾 반려동물 추천 페이지</h2>
+      <div className="grid"  style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))', gap: '80px', alignItems: 'start' }}>
+        <SurveyForm user={user.username} />
+        <RecommandContainer user={user.username} />
+        <Recommend user={user.username} />
+      </div>
     </div>
   );
 }
