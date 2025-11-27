@@ -90,7 +90,7 @@ export default function Recommend({ user }) {
         <section style={{ marginTop: '40px' }}>
           { animals.length > 0 ? (
           <div className="result-shell">
-            <div className="result-content grid">
+            <div className="result-content grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
               {animals.map((a) => (
                 <AnimalCard
                   key={a.desertionNo}
