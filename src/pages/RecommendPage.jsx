@@ -67,14 +67,7 @@ export default function RecommendPage() {
                 </div>
               </div>
               {Array.isArray(latestRecommendations) && latestRecommendations.length > 0 ? (
-                <div
-                  className="result-grid"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: 16,
-                  }}
-                >
+                <div className="result-grid">
                   {latestRecommendations.map((a) => (
                     <AnimalCard
                       key={a.desertionNo}
