@@ -98,3 +98,125 @@
   pointer-events: none;
   user-select: none;
 }
+
+.card__score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  display: inline-block;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(11,132,255,0.95), rgba(6,80,160,0.95));
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 6px 16px rgba(11,132,255,0.18);
+  pointer-events: none;
+}
+
+/* If you want a subtle variant for low scores, use modifier class (add via JS if needed) */
+.card__score.low {
+  background: linear-gradient(180deg, rgba(255,124,77,0.95), rgba(205,60,20,0.95));
+  box-shadow: 0 6px 16px rgba(255,124,77,0.12);
+}
+
+/* Reasons summary row inside card body */
+.card__reasons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+/* pill-like badges for each reason (short text) */
+.card__reasonBadge {
+  display: inline-block;
+  background: #f0f8ff;
+  color: #065aa8;
+  border: 1px solid rgba(6,90,168,0.08);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1;
+  max-width: calc(100% - 40px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* when there's more reasons, show +N */
+.card__reasonMore {
+  font-size: 12px;
+  color: var(--text-soft);
+  padding-left: 4px;
+}
+
+/* Detailed reason list (for modal / expanded view) */
+.reasons-list {
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+  border-radius: 8px;
+  background: #fbfdff;
+  border: 1px solid #eef7ff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #0b2540;
+}
+
+.reason-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #f0f6ff;
+}
+
+.reason-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.reason-type {
+  font-size: 12px;
+  color: #055aa3;
+  background: #e8f4ff;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.reason-label {
+  font-size: 14px;
+  color: #0b2540;
+  font-weight: 600;
+}
+
+.reason-evidence {
+  font-size: 12px;
+  color: #5b6b79;
+  margin-top: 6px;
+}
+
+/* =========================================================
+  small responsive tweaks for badges / score
+========================================================= */
+@media (max-width: 640px) {
+  .card__score {
+    top: 8px;
+    left: 8px;
+    padding: 5px 7px;
+    font-size: 12px;
+  }
+  .card__reasonBadge {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+}

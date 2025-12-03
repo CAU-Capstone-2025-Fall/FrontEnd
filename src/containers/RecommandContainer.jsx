@@ -116,7 +116,7 @@ function getInteractionClass(score) {
   }
 }
 
-export default function RecommandContainer({ user }) {
+export default function RecommandContainer({ user, surveyVersion }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
@@ -142,7 +142,7 @@ export default function RecommandContainer({ user }) {
     }
 
     load();
-  }, [user]);
+  }, [user, surveyVersion]);
 
   if (loading) return <div className="report-wrapper">로딩 중...</div>;
   if (err) return <div className="report-wrapper">{err}</div>;

@@ -3,7 +3,7 @@ import axios from 'axios';
 import AnimalDetail from '../components/AnimalDetail';
 import AnimalCard from '../components/AnimalCard';
 import { useFavoriteStore } from '../store/useFavoriteStore';
-import { getAnimals, getAnimalCount, getAnimalById } from '../api/animals';
+import { getAnimalById } from '../api/animals';
 import '../css/cards.css';
 const api = axios.create({
   baseURL: '/api/recommand/hybrid',
@@ -90,7 +90,11 @@ export default function Recommend({ user }) {
         <section style={{ marginTop: '40px' }}>
           { animals.length > 0 ? (
           <div className="result-shell">
-            <div className="result-content grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
+            <div className="result-content grid" style={{ display: 'grid', 
+               gap: '20px', background: 'var(--bg-page, #def2ff)', 
+               borderRadius: 'var(--radius, 20px)',
+               
+               }}>
               {animals.map((a) => (
                 <AnimalCard
                   key={a.desertionNo}
