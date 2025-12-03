@@ -155,10 +155,10 @@ const REQUIRED_FIELDS = [
   { key: 'preferredPersonality', label: '16. 선호하는 반려동물의 성격', isArray: true },
   { key: 'careTime', label: '17. 하루 케어 가능 시간' },
   { key: 'budget', label: '18. 월 평균 가구소득' },
-  { key: 'specialEnvironment', label: '19. 집의 특별한 환경' },
   { key: 'petHistory', label: '20. 반려동물 사육경험' },
   { key: 'currentPets', label: '21. 현재 양육중인 반려동물', isArray: true },
   { key: 'wantingPet', label: '22. 반려동물 사육의향' },
+  { key: 'userQuery', label: '24. 원하는 반려동물의 구체적 특징 (추천 키워드)' },
 ];
 
 export default function SurveyForm({ user, onSave }) {
@@ -590,7 +590,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          19. 집의 특별한 환경 *
+          19. 집의 특별한 환경
           <input
             name="specialEnvironment"
             value={answers.specialEnvironment}
@@ -658,7 +658,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          24. 원하는 반려동물의 구체적 특징 (추천 키워드)
+          24. 원하는 반려동물의 구체적 특징 (추천 키워드) *
           <input
             type="text"
             name="userQuery"

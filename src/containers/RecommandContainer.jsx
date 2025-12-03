@@ -1,5 +1,3 @@
-// src/containers/RecommandContainer.jsx
-
 import { useEffect, useState } from 'react';
 import { getReport } from '../api/report';
 import '../css/report.css';
