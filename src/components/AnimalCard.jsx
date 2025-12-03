@@ -30,7 +30,7 @@ function toPercentScore(raw) {
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode}) {
+export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode }) {
   const imgSrc = aiMode ? animal.createdImg || animal.popfile1 : animal.popfile1;
   const isAIImage = aiMode && animal.createdImg;
   const rec = animal.recommendation || {
@@ -42,7 +42,7 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode}
   const reasonObjects = Array.isArray(rec.reasons) ? rec.reasons : [];
   // normalize to plain strings for easy display
   const reasonTexts = reasonObjects
-    .map(r => {
+    .map((r) => {
       if (!r) return '';
       // prefer 'reason' field (we put human-short string there in backend), else fall back to 'label'
       return (r.reason || r.label || '').trim();
@@ -57,7 +57,14 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode}
         {isAIImage && <span className="ai-generated-tag">AI 생성 이미지</span>}
 
         {finalScore !== null && finalScore !== undefined && (
-          <span className="card__score" title={`최종 점수: ${finalScore}`}>{typeof finalScore === 'number' ? finalScore.toFixed(2) : finalScore}</span>
+          <span
+            className="card__score"
+            title={`매칭률: ${
+              typeof finalScore === 'number' ? `${Math.round(finalScore)}%` : finalScore
+            }`}
+          >
+            {typeof finalScore === 'number' ? `매칭률 ${Math.round(finalScore)}%` : finalScore}
+          </span>
         )}
       </div>
 

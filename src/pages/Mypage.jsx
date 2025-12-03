@@ -82,21 +82,12 @@ export default function MyPage({ user }) {
   const navigate = useNavigate();
 
   // ------------------------
-  // user 없으면 바로 로그인 필요 화면만
-  // ------------------------
-  if (!user) {
-    return (
-      <div className="mypage-section">
-        <h2>마이페이지</h2>
-        <p>로그인이 필요한 서비스입니다.</p>
-      </div>
-    );
-  }
-
-  // ------------------------
   // Survey & 리뷰 로드
   // ------------------------
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     async function loadSurvey() {
       try {
         const res = await api.get(`/${user.username}`);
@@ -124,13 +115,19 @@ export default function MyPage({ user }) {
     () => favorites.map((id) => favMap[id]).filter(Boolean),
     [favorites, favMap]
   );
-
+  if (!user) {
+    return (
+      <div className="mypage-section">
+        <h2>마이페이지</h2>
+        <p>로그인 이후 이용 가능한 페이지입니다.</p>
+      </div>
+    );
+  }
   async function openDetail(id) {
     const doc = await getReview(id);
     setReviewSelected(doc);
     setMode('detail');
   }
-
   return (
     <div className="mypage-section">
       <h2>마이페이지</h2>
