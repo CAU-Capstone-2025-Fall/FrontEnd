@@ -100,7 +100,7 @@ export default function MyPage({ user }) {
     async function loadReviews() {
       try {
         const { items } = await listReviews();
-        const mine = items.filter((it) => it.authorId === user);
+        const mine = items.filter((it) => it.authorId === user.username);
         setMyReviews(mine);
       } catch (e) {
         console.error('[Review Load Error]', e);
