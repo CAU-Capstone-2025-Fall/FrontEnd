@@ -247,10 +247,8 @@
   background: linear-gradient(135deg, #ff889a, #e65454);
 }
 
-/* 완전 중립용 (둘 다 애매하거나 설명용 라벨 같은 것) */
 .card__reasonBadge--neutral {
-  background: linear-gradient(135deg, #e5e7eb, #9ca3af);
-  border-color: rgba(107, 114, 128, 0.6);
+  background: linear-gradient(135deg, #d9dfea, #99adcf);
 }
 
 /* 자세한 설명 리스트 (카드 안) */

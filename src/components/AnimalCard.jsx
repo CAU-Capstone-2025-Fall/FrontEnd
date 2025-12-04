@@ -73,6 +73,28 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
 
   // 배지에 쓸 "짧은 라벨"
   const reasonBadges = reasonObjects.filter((r) => r && (r.label || r.reason));
+  // ---- reasonBadges 정렬 ----
+  const sortedReasonBadges = [...reasonBadges].sort((a, b) => {
+    const scoreA = Number(a.score ?? 0);
+    const scoreB = Number(b.score ?? 0);
+
+    // 1) 가점 우선
+    if (scoreA > 0 && scoreB <= 0) return -1;
+    if (scoreA <= 0 && scoreB > 0) return 1;
+
+    // 2) 감점 다음
+    if (scoreA < 0 && scoreB >= 0) return -1;
+    if (scoreA >= 0 && scoreB < 0) return 1;
+
+    // 3) 같은 그룹 안에서는:
+    //    - 가점: 큰 점수 먼저
+    //    - 감점: 절댓값 큰 점수 먼저
+    //    - 중립: 동일
+    if (scoreA > 0 && scoreB > 0) return scoreB - scoreA; // 가점 내림차순
+    if (scoreA < 0 && scoreB < 0) return Math.abs(scoreB) - Math.abs(scoreA); // 감점 절대값 내림차순
+
+    return 0; // 중립끼리는 그대로
+  });
 
   return (
     <div className="card">
@@ -137,7 +159,7 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
         {reasonBadges.length > 0 && (
           <div className="card__reasonsBlock">
             <div className="card__reasons">
-              {reasonBadges.map((r, i) => {
+              {sortedReasonBadges.map((r, i) => {
                 const score = Number(r.score ?? 0);
                 let cls = 'card__reasonBadge card__reasonBadge--neutral';
 
