@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 
-import './index.css';
 import AgeCalculator from './components/AgeCalculator';
 import BmiCalculator from './components/BmiCalculator';
 import Header from './components/Header';
 import HeroSection from './components/HeroSection';
 import RescueDogCounselor from './components/RescueDogCounselor';
-import AdminRoute from './components/AdminRoute';
 import LoginContainer from './containers/LoginContainer';
+import './index.css';
+import AdminMainPage from './pages/AdminMainPage';
+import AnimalImageEditPage from './pages/AnimalImageEditPage';
 import BrowseAll from './pages/BrowseAll';
-import ImageEditTest from './pages/ImageEditTest';
 import Mypage from './pages/Mypage';
 import RecommendPage from './pages/RecommendPage';
 import Report from './pages/Report';
@@ -71,15 +71,8 @@ export default function App() {
             />
 
             {/* 이미지 편집 테스트 페이지 */}
-            <Route
-              path="/admin"
-              element={
-                <AdminRoute>
-                  <ImageEditTest />
-                </AdminRoute>
-              }
-            />
-
+            <Route path="/admin" element={<AdminMainPage />} />
+            <Route path="/admin/image-edit" element={<AnimalImageEditPage />} />
             {/* 후기 페이지 */}
             <Route path="/reviews" element={<ReviewPage />} />
 

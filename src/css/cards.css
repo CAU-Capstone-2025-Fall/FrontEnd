@@ -107,18 +107,18 @@
   display: inline-block;
   padding: 6px 8px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(11,132,255,0.95), rgba(6,80,160,0.95));
+  background: linear-gradient(180deg, rgba(11, 132, 255, 0.95), rgba(6, 80, 160, 0.95));
   color: #fff;
   font-weight: 700;
   font-size: 13px;
-  box-shadow: 0 6px 16px rgba(11,132,255,0.18);
+  box-shadow: 0 6px 16px rgba(11, 132, 255, 0.18);
   pointer-events: none;
 }
 
 /* If you want a subtle variant for low scores, use modifier class (add via JS if needed) */
 .card__score.low {
-  background: linear-gradient(180deg, rgba(255,124,77,0.95), rgba(205,60,20,0.95));
-  box-shadow: 0 6px 16px rgba(255,124,77,0.12);
+  background: linear-gradient(180deg, rgba(255, 124, 77, 0.95), rgba(205, 60, 20, 0.95));
+  box-shadow: 0 6px 16px rgba(255, 124, 77, 0.12);
 }
 
 /* Reasons summary row inside card body */
@@ -135,7 +135,7 @@
   display: inline-block;
   background: #f0f8ff;
   color: #065aa8;
-  border: 1px solid rgba(6,90,168,0.08);
+  border: 1px solid rgba(6, 90, 168, 0.08);
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;

@@ -1,13 +1,12 @@
-import SurveyForm from '../components/SurveyForm'; 
-import Recommend from '../components/Recommend';
-import { useAuthStore } from '../store/useAuthStore';
-import RecommandContainer from '../containers/RecommandContainer';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AnimalCard from '../components/AnimalCard';
 import AnimalDetail from '../components/AnimalDetail';
-import { useFavoriteStore } from '../store/useFavoriteStore';
-import '../css/recommendPage.css';
+import SurveyForm from '../components/SurveyForm';
+import RecommandContainer from '../containers/RecommandContainer';
 import '../css/cards.css';
+import '../css/recommendPage.css';
+import { useAuthStore } from '../store/useAuthStore';
+import { useFavoriteStore } from '../store/useFavoriteStore';
 
 export default function RecommendPage() {
   const { user, loading } = useAuthStore();
@@ -23,14 +22,14 @@ export default function RecommendPage() {
 
   return (
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
-      <h2 className="page-title">🐾 반려동물 추천 페이지</h2>
-      <div className="page-grid"  >
+      <div className="page-grid">
         <main className="main-col">
           {showSurvey ? (
-            <SurveyForm user={user.username} 
+            <SurveyForm
+              user={user.username}
               onSave={(answers, recAnimals) => {
                 setLatestSurvey(answers);
-                if (Array.isArray(recAnimals)){
+                if (Array.isArray(recAnimals)) {
                   setLatestRecommendations(recAnimals);
                 }
                 setSurveyVersion((v) => v + 1);
@@ -39,7 +38,14 @@ export default function RecommendPage() {
             />
           ) : (
             <section classNamem="recommend-only">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+              >
                 <h3 style={{ margin: 0 }}>추천 동물</h3>
                 <div>
                   <button
@@ -79,21 +85,18 @@ export default function RecommendPage() {
               ) : (
                 <div style={{ padding: 12 }}>
                   <p style={{ color: '#666' }}>
-                    아직 즉시 사용할 추천 결과가 없습니다. 오른쪽의 추천 컨테이너에서 최신 결과를 불러오거나,
-                    설문을 제출하면 자동으로 추천이 실행됩니다.
+                    아직 즉시 사용할 추천 결과가 없습니다. 오른쪽의 추천 컨테이너에서 최신 결과를
+                    불러오거나, 설문을 제출하면 자동으로 추천이 실행됩니다.
                   </p>
                 </div>
               )}
               <AnimalDetail animal={selectedAnimal} onClose={() => setSelectedAnimal(null)} />
             </section>
           )}
-
         </main>
         <aside className="aside-col">
           <div className="side-card">
-            <RecommandContainer 
-              key={`recommand-${surveyVersion}`}
-              user={user.username} />
+            <RecommandContainer key={`recommand-${surveyVersion}`} user={user.username} />
           </div>
         </aside>
         {/* <Recommend user={user.username} /> */}
