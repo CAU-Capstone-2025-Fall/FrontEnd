@@ -166,12 +166,13 @@ export default function SurveyForm({ user, onSave }) {
   const [answers, setAnswers] = useState(initialAnswers);
 
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0); // 🔥 가짜 퍼센트 상태
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
   const [recommendedAnimals, setRecommendedAnimals] = useState([]);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
-
+  const [phaseText, setPhaseText] = useState('');
   const { ids: favorites, map: favMap, toggle } = useFavoriteStore();
 
   useEffect(() => {
@@ -191,7 +192,7 @@ export default function SurveyForm({ user, onSave }) {
           }
         }
       } catch (err) {
-        // console.warn('설문 로드 실패', err);
+        // 설문 로드 실패시 무시
       }
     })();
     return () => {
@@ -199,21 +200,61 @@ export default function SurveyForm({ user, onSave }) {
     };
   }, [user]);
 
+  useEffect(() => {
+    // 로딩이 꺼지면 퍼센트/문구 리셋
+    if (!loading) {
+      setProgress(0);
+      setPhaseText('');
+      return;
+    }
+
+    let timerId;
+
+    const tick = () => {
+      setProgress((prev) => {
+        if (prev >= 92) return prev; // 92까지 가짜로 채우고 대기
+
+        const step = 0.4 + Math.random() * 5.0; // 0.4 ~ 5.4%씩 증가
+        let next = prev + step;
+        if (next > 92) next = 92;
+
+        const pct = Math.round(next);
+
+        if (pct < 20) {
+          setPhaseText('설문 응답을 정리하고 있어요.');
+        } else if (pct < 40) {
+          setPhaseText('생활 환경과 조건을 분석하는 중입니다.');
+        } else if (pct < 60) {
+          setPhaseText('선호하신 조건에 맞는 동물 후보를 찾고 있어요.');
+        } else if (pct < 80) {
+          setPhaseText('후보 동물들과의 궁합을 계산하는 중입니다.');
+        } else if (pct < 95) {
+          setPhaseText('추천 순위를 정리하고 리포트를 정돈하고 있어요.');
+        } else {
+          setPhaseText('거의 다 됐어요! 결과를 마무리 중입니다.');
+        }
+
+        return pct;
+      });
+
+      const delay = 1300 + Math.random() * 1200; // 1.3초 ~ 2.5초 사이
+      timerId = setTimeout(tick, delay);
+    };
+
+    const firstDelay = 1300 + Math.random() * 1200;
+    timerId = setTimeout(tick, firstDelay);
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [loading]);
+
   const favAnimals = useMemo(
     () => favorites.map((id) => favMap[id]).filter(Boolean),
     [favorites, favMap]
   );
 
   if (!user) return <p>로그인 후 이용해주세요.</p>;
-
-  if (loading) {
-    return (
-      <div className="survey-loading">
-        <div className="spinner"></div>
-        <p>잠시만 기다려주세요... 리포트를 생성하고 매칭되는 동물들을 찾는 중입니다 🐾</p>
-      </div>
-    );
-  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -322,33 +363,55 @@ export default function SurveyForm({ user, onSave }) {
 
     setLoading(true);
     setError(null);
+    setProgress(0);
+
+    const fakeLoading = new Promise((resolve) => setTimeout(resolve, 3000 + Math.random() * 2000));
 
     try {
-      const surveyRes = await saveSurvey(user, answers);
-      if (!surveyRes.success) throw new Error('설문 저장 실패');
+      const background = (async () => {
+        const surveyRes = await saveSurvey(user, answers);
+        if (!surveyRes.success) throw new Error('설문 저장 실패');
 
-      const A = buildA(answers);
+        const A = buildA(answers);
+        const encoded = await encodeA(A, user);
+        if (!encoded.success) throw new Error('encode 실패');
 
-      const encoded = await encodeA(A, user);
-      if (!encoded.success) throw new Error('encode 실패');
+        const recAnimals = await runRecommendation(answers.userQuery);
+        return recAnimals;
+      })();
 
-      console.log('🔥 encode + DB 저장 완료:', encoded);
+      const [, animals] = await Promise.all([fakeLoading, background]);
 
-      const recAnimals = await runRecommendation(answers.userQuery);
-      setRecommendedAnimals(recAnimals || []);
-
+      setProgress(100); // 마지막에 100% 찍어주기
+      setRecommendedAnimals(animals || []);
       setSubmitted(true);
-      if (onSave) onSave(answers, recAnimals);
-      // navigate('/report');
+      if (onSave) onSave(answers, animals);
     } catch (err) {
       setError(err.message || '알 수 없는 오류 발생');
     } finally {
-      setLoading(false);
+      // 100% 살짝 보여주고 오버레이 내리기
+      setTimeout(() => {
+        setLoading(false);
+      }, 700);
     }
   };
 
   return (
     <div className="Survey-container">
+      {loading && (
+        <div className="progress-overlay">
+          <div className="progress-wrapper">
+            <h3>보고서를 생성하고 매칭되는 동물을 찾고 있어요</h3>
+            <div className="progress-box">
+              <div className="progress-bar" style={{ width: `${progress}%` }} />
+            </div>
+            <p className="progress-text">
+              {phaseText || '작업을 진행 중입니다.'} ({progress}%)
+            </p>
+          </div>
+        </div>
+      )}
+
       <form className="survey-section" onSubmit={handleSubmit} noValidate>
         <h3>반려동물 추천 설문조사</h3>
 
