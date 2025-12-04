@@ -6,19 +6,24 @@
   grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
   gap: var(--gap);
 }
+
 .card {
   width: 100%;
-  max-width: var(--card-w);
-  height: var(--card-h);
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  height: auto;
+  max-width: 100%;
+  min-height: var(--card-h);
+
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
   position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
+
+/* 이미지 영역 */
 .card__imgWrap {
   aspect-ratio: var(--img-ratio);
   width: 100%;
@@ -37,43 +42,52 @@
   transform: scale(1.05);
 }
 
+/* 찜 하트 */
 .card__heart {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 22px;
-  background: #fff;
-  border: 1px solid var(--line);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  top: 14px;
+  right: 14px;
+  font-size: 24px;
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #d1d5db;
   cursor: pointer;
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.15);
 }
 .card__heart.is-on {
   color: #ff5d5d;
 }
 
+/* 카드 본문 */
 .card__body {
-  padding: 14px;
+  padding: 18px 18px 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
-}
-.card__title {
-  font-size: 18px;
-  margin: 2px 0 0;
-}
-.card__meta {
-  color: var(--text-soft);
-  font-size: 14px;
+  font-size: 17px;
+  color: #111827;
 }
 
+.card__title {
+  font-size: 22px;
+  margin: 0;
+  font-weight: 700;
+  color: #0b2540;
+}
+
+.card__meta {
+  color: #6b7280;
+  font-size: 15.5px;
+}
+
+/* 비어있는 상태 */
 .empty {
   grid-column: 1/-1;
   background: #fff;
@@ -84,44 +98,107 @@
   color: var(--text-soft);
 }
 
+/* AI 태그 */
 .ai-generated-tag {
   position: absolute;
-  left: 10px;
-  bottom: 10px;
+  left: 12px;
+  bottom: 4px;
   padding: 4px 8px;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 600;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.55);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.7);
   color: #fff;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
   pointer-events: none;
   user-select: none;
 }
 
+/* 메인 매칭률 뱃지 */
 .card__score {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 12px;
+  left: 12px;
   z-index: 5;
-  display: inline-block;
-  padding: 6px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(11, 132, 255, 0.95), rgba(6, 80, 160, 0.95));
-  color: #fff;
+
+  background: radial-gradient(
+    circle at top left,
+    rgba(139, 199, 255, 0.9),
+    rgba(255, 255, 255, 0.4)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(6px);
+
+  color: #0b2540;
   font-weight: 700;
-  font-size: 13px;
-  box-shadow: 0 6px 16px rgba(11, 132, 255, 0.18);
+  font-size: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
   pointer-events: none;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-/* If you want a subtle variant for low scores, use modifier class (add via JS if needed) */
 .card__score.low {
-  background: linear-gradient(180deg, rgba(255, 124, 77, 0.95), rgba(205, 60, 20, 0.95));
-  box-shadow: 0 6px 16px rgba(255, 124, 77, 0.12);
+  background: radial-gradient(
+    circle at top left,
+    rgba(248, 113, 113, 0.95),
+    rgba(254, 226, 226, 0.9)
+  );
+  color: #7f1d1d;
 }
 
-/* Reasons summary row inside card body */
+/* =========================================================
+  서브 점수 (조건 일치 / 입양자 적합도 / 우선 필요 / 거리 편의)
+========================================================= */
+
+.card__subScores {
+  margin-top: 2px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.subScore {
+  padding: 8px 11px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.025);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.subScore--soft {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.subScore__label {
+  font-size: 15px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.subScore__value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* =========================================================
+  이유 뱃지 + 디테일 텍스트 (그라데이션 + 통일된 텍스트 색)
+========================================================= */
+
+.card__reasonsBlock {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.4);
+}
+
 .card__reasons {
   display: flex;
   gap: 8px;
@@ -130,93 +207,80 @@
   margin-top: 6px;
 }
 
-/* pill-like badges for each reason (short text) */
+/* 공통 pill 스타일: 텍스트 색은 여기서만 지정 */
 .card__reasonBadge {
   display: inline-block;
-  background: #f0f8ff;
-  color: #065aa8;
-  border: 1px solid rgba(6, 90, 168, 0.08);
-  padding: 6px 10px;
+  padding: 7px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1;
   max-width: calc(100% - 40px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  /* 기본 배경 (중립 또는 점수 없는 경우) */
+  background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+  border: 1px solid rgba(15, 23, 42, 0.15);
+
+  color: #ffffff; /* ✅ 텍스트 컬러 통일 */
+  text-shadow: 0 1px 2px rgba(15, 23, 42, 0.35);
 }
 
-/* when there's more reasons, show +N */
-.card__reasonMore {
-  font-size: 12px;
-  color: var(--text-soft);
-  padding-left: 4px;
+/* 가점 - 연한 블루/민트 그라데이션 */
+.card__reasonBadge--positive-light {
+  background: linear-gradient(135deg, #a0d4f1, #96a6f8);
 }
 
-/* Detailed reason list (for modal / expanded view) */
-.reasons-list {
-  list-style: none;
-  padding: 10px;
-  margin: 0;
-  border-radius: 8px;
-  background: #fbfdff;
-  border: 1px solid #eef7ff;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 13px;
-  color: #0b2540;
+/* 가점 - 진한 블루/티얼 그라데이션 */
+.card__reasonBadge--positive-strong {
+  background: linear-gradient(135deg, #6da7f2, #5061fd);
 }
 
-.reason-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  border-radius: 8px;
-  background: #fff;
-  border: 1px solid #f0f6ff;
+/* 감점 - 연한 코랄/핑크 그라데이션 */
+.card__reasonBadge--negative-light {
+  background: linear-gradient(135deg, #fee2e2, #fca5a5);
 }
 
-.reason-head {
-  display: flex;
-  gap: 8px;
-  align-items: baseline;
+/* 감점 - 진한 레드/버건디 그라데이션 */
+.card__reasonBadge--negative-strong {
+  background: linear-gradient(135deg, #ff889a, #e65454);
 }
 
-.reason-type {
-  font-size: 12px;
-  color: #055aa3;
-  background: #e8f4ff;
-  padding: 3px 7px;
-  border-radius: 6px;
-  font-weight: 700;
+/* 완전 중립용 (둘 다 애매하거나 설명용 라벨 같은 것) */
+.card__reasonBadge--neutral {
+  background: linear-gradient(135deg, #e5e7eb, #9ca3af);
+  border-color: rgba(107, 114, 128, 0.6);
 }
 
-.reason-label {
-  font-size: 14px;
-  color: #0b2540;
-  font-weight: 600;
+/* 자세한 설명 리스트 (카드 안) */
+.card__reasonDetails {
+  margin-top: 8px;
+  padding-left: 1.2rem;
+  list-style: disc;
 }
 
-.reason-evidence {
-  font-size: 12px;
-  color: #5b6b79;
-  margin-top: 6px;
+.card__reasonDetails li {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #4b5563;
 }
 
-/* =========================================================
-  small responsive tweaks for badges / score
-========================================================= */
+/* 반응형 – 작은 화면에서 살짝 줄이기 */
 @media (max-width: 640px) {
   .card__score {
     top: 8px;
     left: 8px;
-    padding: 5px 7px;
+    padding: 5px 8px;
     font-size: 12px;
   }
+
+  .card__subScores {
+    grid-template-columns: 1fr;
+  }
+
   .card__reasonBadge {
-    padding: 5px 8px;
-    font-size: 11px;
+    padding: 5px 9px;
+    font-size: 13px;
   }
 }

@@ -5,6 +5,7 @@ import AnimalCard from '../components/AnimalCard';
 import { useFavoriteStore } from '../store/useFavoriteStore';
 import { getAnimalById } from '../api/animals';
 import '../css/cards.css';
+
 const api = axios.create({
   baseURL: '/api/recommand/hybrid',
   withCredentials: true,
@@ -18,7 +19,7 @@ export default function Recommend({ user }) {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState([]); // 필요하면 raw 추천 결과 디버깅용으로 사용 가능
   const [animals, setAnimals] = useState([]);
   const [selected, setSelected] = useState(null);
   const { ids: favorites, map: favMap, toggle } = useFavoriteStore();
@@ -27,6 +28,8 @@ export default function Recommend({ user }) {
     setSubmitted(false);
     setError(null);
     setResult(null);
+    setAnimals([]);
+    setSelected(null);
   }, [user]);
 
   const favAnimals = useMemo(
@@ -40,34 +43,56 @@ export default function Recommend({ user }) {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setSubmitted(true);
+
     const payload = {
-      natural_query: (userQuery || '').trim(), 
-      limit: 6, 
+      natural_query: (userQuery || '').trim(),
+      limit: 6,
       user_id: user,
-      use_survey: true
+      use_survey: true,
     };
-    try{
+
+    try {
       const res = await api.post('', payload);
       const list = Array.isArray(res.data)
         ? res.data
-        : (res.data && Array.isArray(res.data.data) ? res.data.data : []);
+        : res.data && Array.isArray(res.data.data)
+          ? res.data.data
+          : [];
+
       if (!Array.isArray(list)) {
         setError('서버 응답 형식이 올바르지 않습니다.');
         return;
       }
+
+      // 디버깅용으로 원본 추천 결과도 보관
+      setResult(list);
+
+      // desertionNo 기준으로 상세 정보 조회
       const details = await Promise.all(
-        list.map(({ desertionNo }) =>
-          getAnimalById(desertionNo).catch(() => null)
-        )
+        list.map(({ desertionNo }) => getAnimalById(desertionNo).catch(() => null))
       );
-      const merged = details.filter(Boolean);
+
+      // 상세 정보 + 추천 메타데이터 merge
+      const merged = details
+        .map((detail, index) => {
+          const recMeta = list[index];
+          if (!detail || !recMeta) return null;
+          return {
+            ...detail,
+            // 백엔드에서 온 추천 결과 전체를 붙인다
+            recommendation: recMeta,
+          };
+        })
+        .filter(Boolean);
+
       setAnimals(merged);
-    } catch (err){
-    setError('서버 오류: ' + (err?.response?.msg || err.message));
+    } catch (err) {
+      setError('서버 오류: ' + (err?.response?.data?.msg || err.message));
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="recommend" style={{ display: 'contents' }}>
@@ -86,31 +111,37 @@ export default function Recommend({ user }) {
           {loading ? '추천 중...' : '추천 받기'}
         </button>
       </form>
+
       <form className="browse-section">
         <section style={{ marginTop: '40px' }}>
-          { animals.length > 0 ? (
-          <div className="result-shell">
-            <div className="result-content grid" style={{ display: 'grid', 
-               gap: '20px', background: 'var(--bg-page, #def2ff)', 
-               borderRadius: 'var(--radius, 20px)',
-               
-               }}>
-              {animals.map((a) => (
-                <AnimalCard
-                  key={a.desertionNo}
-                  animal={a}
-                  isFav={favorites.includes(a.desertionNo)}
-                  onOpen={setSelected}
-                  onToggleFav={() => toggle(a)}
-                />
-              ))}
+          {animals.length > 0 ? (
+            <div className="result-shell">
+              <div
+                className="result-content grid"
+                style={{
+                  display: 'grid',
+                  gap: '20px',
+                  background: 'var(--bg-page, #def2ff)',
+                  borderRadius: 'var(--radius, 20px)',
+                }}
+              >
+                {animals.map((a) => (
+                  <AnimalCard
+                    key={a.desertionNo}
+                    animal={a}
+                    isFav={favorites.includes(a.desertionNo)}
+                    onOpen={setSelected}
+                    onToggleFav={() => toggle(a)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
           ) : (
-          <div className="result-shell">
-            <div className="result">
+            <div className="result-shell">
+              <div className="result">
+                {submitted && !loading && !error && <p>조건에 맞는 추천 결과가 없습니다.</p>}
+              </div>
             </div>
-          </div>
           )}
           <AnimalDetail animal={selected} onClose={() => setSelected(null)} />
         </section>

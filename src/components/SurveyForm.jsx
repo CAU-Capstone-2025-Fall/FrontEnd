@@ -1,17 +1,14 @@
-// SurveyForm.jsx
-import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom'; 
+import axios from 'axios';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAnimalById } from '../api/animals';
 import { encodeA } from '../api/encode.js';
 import { getSurvey, saveSurvey } from '../api/survey';
-import axios from 'axios';
-import { getAnimalById } from '../api/animals';
+import '../css/recommendPage.css';
+import { useFavoriteStore } from '../store/useFavoriteStore';
 import AnimalCard from './AnimalCard';
 import AnimalDetail from './AnimalDetail';
-import { useFavoriteStore } from '../store/useFavoriteStore';
-import '../css/recommendPage.css';
-// -------------------------
-// 1) A 초기값 (16개)
-// -------------------------
+
 const initialA = {
   age: '0',
   familyCount: '0',
@@ -35,9 +32,6 @@ const initialA = {
   job10: '0',
 };
 
-// -------------------------
-// 2) 매핑 테이블
-// -------------------------
 const HOUSE_SIZE_MAP = {
   '10평 미만': '5',
   '10평 ~ 20평': '15',
@@ -65,7 +59,6 @@ const RESIDENCE_MAP = {
   기타: 'residenceType4',
 };
 
-// 🔥 job 10개 → 모델 5개로 그룹핑
 const JOB_GROUP = {
   '경영/관리직': 'job1',
   전문직: 'job1',
@@ -91,37 +84,30 @@ const WANTING_PET_MAP = {
   '매우 의향이 있다': '1.0',
 };
 
-// -------------------------
-// 3) buildA()
-// -------------------------
 function buildA(d) {
   const A = { ...initialA };
 
-  // 숫자형
   A.age = d.age || '0';
   A.familyCount = d.familyCount || '0';
   A.houseSize = HOUSE_SIZE_MAP[d.houseSize] || '0';
   A.budget = BUDGET_MAP[d.budget] || '0';
 
-  // 성별
   if (d.sex === '남성') A.sex1 = '1';
   if (d.sex === '여성') A.sex2 = '1';
 
-  // 주택 형태
   if (RESIDENCE_MAP[d.residenceType]) {
     A[RESIDENCE_MAP[d.residenceType]] = '1';
   }
 
-  // 직업 그룹핑
   if (JOB_GROUP[d.job]) {
     A[JOB_GROUP[d.job]] = '1';
   }
 
-  // 사육 의향
   A.wantingPet = '0';
 
   return A;
 }
+
 const initialAnswers = {
   address: '',
   age: '',
@@ -147,14 +133,34 @@ const initialAnswers = {
   houseSize: '',
   wantingPet: '',
   additionalNote: '',
-  // recommend 관련
   userQuery: '',
 };
 
+const REQUIRED_FIELDS = [
+  { key: 'address', label: '1. 거주 지역' },
+  { key: 'age', label: '2. 연령' },
+  { key: 'sex', label: '3. 성별' },
+  { key: 'job', label: '4. 직업' },
+  { key: 'residenceType', label: '5. 주거 형태' },
+  { key: 'houseSize', label: '6. 주택 규모' },
+  { key: 'hasPetSpace', label: '7. 반려동물을 위한 별도 공간' },
+  { key: 'familyCount', label: '8. 가족 구성원 수' },
+  { key: 'hasChildOrElder', label: '9. 어린이나 노인 동거 여부' },
+  { key: 'dailyHomeTime', label: '10. 하루 중 집에 머무는 시간' },
+  { key: 'hasAllergy', label: '11. 동물 알레르기 여부' },
+  { key: 'activityLevel', label: '12. 평소 활동 수준' },
+  { key: 'expectations', label: '13. 반려동물에게 바라는 점', isArray: true },
+  { key: 'favoriteAnimals', label: '14. 선호하는 동물 종류', isArray: true },
+  { key: 'preferredSize', label: '15. 선호하는 반려동물의 크기' },
+  { key: 'preferredPersonality', label: '16. 선호하는 반려동물의 성격', isArray: true },
+  { key: 'careTime', label: '17. 하루 케어 가능 시간' },
+  { key: 'budget', label: '18. 월 평균 가구소득' },
+  { key: 'petHistory', label: '20. 반려동물 사육경험' },
+  { key: 'currentPets', label: '21. 현재 양육중인 반려동물', isArray: true },
+  { key: 'wantingPet', label: '22. 반려동물 사육의향' },
+  { key: 'userQuery', label: '24. 원하는 반려동물의 구체적 특징 (추천 키워드)' },
+];
 
-// -------------------------
-// Survey component
-// -------------------------
 export default function SurveyForm({ user, onSave }) {
   const navigate = useNavigate();
   const [answers, setAnswers] = useState(initialAnswers);
@@ -200,12 +206,11 @@ export default function SurveyForm({ user, onSave }) {
 
   if (!user) return <p>로그인 후 이용해주세요.</p>;
 
-  // 🔥 여기! 로딩이면 폼 전체 숨기고 로딩 UI만 보여줌
   if (loading) {
     return (
       <div className="survey-loading">
         <div className="spinner"></div>
-        <p>잠시만 기다려주세요... 리포트를 생성하는 중입니다 🐾</p>
+        <p>잠시만 기다려주세요... 리포트를 생성하고 매칭되는 동물들을 찾는 중입니다 🐾</p>
       </div>
     );
   }
@@ -239,13 +244,11 @@ export default function SurveyForm({ user, onSave }) {
       const list = Array.isArray(res.data)
         ? res.data
         : res.data && Array.isArray(res.data.data)
-        ? res.data.data
-        : [];
+          ? res.data.data
+          : [];
       if (!Array.isArray(list)) return [];
       const merged = await Promise.all(
         list.map(async (item) => {
-          // item comes from hybrid API and contains desertionNo, reasons, final, etc.
-          // First try to fetch full detail; if it fails, fall back to the item itself (so reason metadata isn't lost)
           let detail = null;
           try {
             detail = await getAnimalById(item.desertionNo);
@@ -253,7 +256,6 @@ export default function SurveyForm({ user, onSave }) {
             detail = null;
           }
 
-          // recommendation meta (structured)
           const recMeta = {
             final: item.final ?? item.score ?? null,
             compat: item.compat ?? null,
@@ -261,20 +263,16 @@ export default function SurveyForm({ user, onSave }) {
             reasons: Array.isArray(item.reasons) ? item.reasons : [],
           };
 
-          // produce a merged object that always includes recommendation under `recommendation`
           if (detail) {
             return {
               ...detail,
-              // keep recommendation metadata in a dedicated field
               recommendation: recMeta,
-              // backward compatibility: set top-level fields some UIs might expect
               finalScore: recMeta.final,
               final: recMeta.final,
               reasons: recMeta.reasons,
             };
           }
 
-          // fallback when detail not available: create minimal object using hybrid item
           return {
             desertionNo: item.desertionNo,
             kindFullNm: item.kindFullNm || item.kindNm || '',
@@ -289,40 +287,59 @@ export default function SurveyForm({ user, onSave }) {
 
       return merged.filter(Boolean);
     } catch (err) {
-      // console.warn('recommend error', err);
       return [];
     }
   }
 
-  // -------------------------
-  // 제출: encodeA만 호출!
-  // -------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return;
+
+    const missingField = REQUIRED_FIELDS.find((field) => {
+      const value = answers[field.key];
+
+      if (field.isArray) {
+        return !Array.isArray(value) || value.length === 0;
+      }
+
+      if (value === undefined || value === null) return true;
+      if (typeof value === 'string' && value.trim() === '') return true;
+
+      return false;
+    });
+
+    if (!missingField && answers.hasAllergy === '있음') {
+      if (!answers.allergyAnimal || answers.allergyAnimal.trim() === '') {
+        alert('11. 동물 알레르기가 있는 경우, 어떤 동물인지 항목을 응답해야 합니다.');
+        return;
+      }
+    }
+
+    if (missingField) {
+      alert(`${missingField.label} 항목을 응답해야 합니다.`);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      // 1) 설문 저장
       const surveyRes = await saveSurvey(user, answers);
       if (!surveyRes.success) throw new Error('설문 저장 실패');
 
-      // 2) A 벡터 생성
       const A = buildA(answers);
 
-      // 3) encode → 여기서 DB 저장 끝남
       const encoded = await encodeA(A, user);
       if (!encoded.success) throw new Error('encode 실패');
 
       console.log('🔥 encode + DB 저장 완료:', encoded);
 
-      // 4) 설문 기반 추천 실행
       const recAnimals = await runRecommendation(answers.userQuery);
       setRecommendedAnimals(recAnimals || []);
 
       setSubmitted(true);
       if (onSave) onSave(answers, recAnimals);
-      // navigate('/report'); 
+      // navigate('/report');
     } catch (err) {
       setError(err.message || '알 수 없는 오류 발생');
     } finally {
@@ -330,42 +347,36 @@ export default function SurveyForm({ user, onSave }) {
     }
   };
 
-  // if (submitted) {
-  //   return <p className="survey-success">저장 성공! 감사합니다 🐾</p>;
-  // }
-
   return (
     <div className="Survey-container">
-      <form className="survey-section" onSubmit={handleSubmit}>
+      <form className="survey-section" onSubmit={handleSubmit} noValidate>
         <h3>반려동물 추천 설문조사</h3>
 
         <label>
-          1. 거주 지역
+          1. 거주 지역 *
           <input
             type="text"
             name="address"
             value={answers.address}
             onChange={handleChange}
             placeholder="예: 서울특별시 강남구 역삼동"
-            required
           />
         </label>
 
         <label>
-          2. 연령
+          2. 연령 *
           <input
             type="text"
             name="age"
             value={answers.age}
             onChange={handleChange}
             placeholder="예: 30"
-            required
           />
         </label>
 
         <label>
-          3. 성별
-          <select name="sex" value={answers.sex} onChange={handleChange} required>
+          3. 성별 *
+          <select name="sex" value={answers.sex} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>남성</option>
             <option>여성</option>
@@ -373,8 +384,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          4. 직업
-          <select name="job" value={answers.job} onChange={handleChange} required>
+          4. 직업 *
+          <select name="job" value={answers.job} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>경영/관리직</option>
             <option>전문직</option>
@@ -390,8 +401,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          5. 주거 형태
-          <select name="residenceType" value={answers.residenceType} onChange={handleChange} required>
+          5. 주거 형태 *
+          <select name="residenceType" value={answers.residenceType} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>아파트</option>
             <option>단독/다가구 주택</option>
@@ -401,8 +412,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          6. 주택 규모
-          <select name="houseSize" value={answers.houseSize} onChange={handleChange} required>
+          6. 주택 규모 *
+          <select name="houseSize" value={answers.houseSize} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>10평 미만</option>
             <option>10평 ~ 20평</option>
@@ -414,8 +425,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          7. 반려동물을 위한 별도 공간이 있나요?
-          <select name="hasPetSpace" value={answers.hasPetSpace} onChange={handleChange} required>
+          7. 반려동물을 위한 별도 공간이 있나요? *
+          <select name="hasPetSpace" value={answers.hasPetSpace} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>있음</option>
             <option>없음</option>
@@ -423,7 +434,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          8. 가족 구성원 수
+          8. 가족 구성원 수 *
           <input
             name="familyCount"
             type="number"
@@ -431,18 +442,12 @@ export default function SurveyForm({ user, onSave }) {
             onChange={handleChange}
             min="1"
             max="20"
-            required
           />
         </label>
 
         <label>
-          9. 어린이나 노인이 함께 거주하나요?
-          <select
-            name="hasChildOrElder"
-            value={answers.hasChildOrElder}
-            onChange={handleChange}
-            required
-          >
+          9. 어린이나 노인이 함께 거주하나요? *
+          <select name="hasChildOrElder" value={answers.hasChildOrElder} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>있음</option>
             <option>없음</option>
@@ -450,8 +455,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          10. 하루 중 집에 머무는 시간
-          <select name="dailyHomeTime" value={answers.dailyHomeTime} onChange={handleChange} required>
+          10. 하루 중 집에 머무는 시간 *
+          <select name="dailyHomeTime" value={answers.dailyHomeTime} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>0~4시간</option>
             <option>4~8시간</option>
@@ -461,8 +466,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          11. 동물 알레르기가 있나요?
-          <select name="hasAllergy" value={answers.hasAllergy} onChange={handleChange} required>
+          11. 동물 알레르기가 있나요? *
+          <select name="hasAllergy" value={answers.hasAllergy} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>없음</option>
             <option>있음</option>
@@ -478,8 +483,8 @@ export default function SurveyForm({ user, onSave }) {
         )}
 
         <label>
-          12. 평소 활동 수준은?
-          <select name="activityLevel" value={answers.activityLevel} onChange={handleChange} required>
+          12. 평소 활동 수준은? *
+          <select name="activityLevel" value={answers.activityLevel} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>매우 활발함</option>
             <option>보통</option>
@@ -488,7 +493,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          13. 반려동물에게 바라는 점
+          13. 반려동물에게 바라는 점 *
           <div className="survey-checkbox-group">
             {[
               '교감(애정 표현, 함께 놀기)',
@@ -512,7 +517,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          14. 선호하는 동물 종류
+          14. 선호하는 동물 종류 *
           <div className="survey-checkbox-group">
             {['강아지', '고양이', '소형동물(햄스터, 토끼 등)', '파충류', '조류', '기타'].map(
               (label) => (
@@ -531,8 +536,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          15. 선호하는 반려동물의 크기
-          <select name="preferredSize" value={answers.preferredSize} onChange={handleChange} required>
+          15. 선호하는 반려동물의 크기 *
+          <select name="preferredSize" value={answers.preferredSize} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>소형</option>
             <option>중형</option>
@@ -542,7 +547,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          16. 선호하는 반려동물의 성격
+          16. 선호하는 반려동물의 성격 *
           <div className="survey-checkbox-group">
             {['활발함', '차분함', '독립적', '애교 많음', '상관없음'].map((label) => (
               <label key={label}>
@@ -559,8 +564,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          17. 하루 케어 가능 시간
-          <select name="careTime" value={answers.careTime} onChange={handleChange} required>
+          17. 하루 케어 가능 시간 *
+          <select name="careTime" value={answers.careTime} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>10분 이하</option>
             <option>30분</option>
@@ -570,8 +575,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          18. 월 평균 가구소득
-          <select name="budget" value={answers.budget} onChange={handleChange} required>
+          18. 월 평균 가구소득 *
+          <select name="budget" value={answers.budget} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>100만원 미만</option>
             <option>100만원 ~ 199만원</option>
@@ -595,8 +600,8 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          20. 반려동물 사육경험
-          <select name="petHistory" value={answers.petHistory} onChange={handleChange} required>
+          20. 반려동물 사육경험 *
+          <select name="petHistory" value={answers.petHistory} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>현재 반려동물을 키우고 있다</option>
             <option>과거에는 키웠으나 현재는 키우고 있지 않다</option>
@@ -605,27 +610,33 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          21. 현재 양육중인 반려동물
+          21. 현재 양육중인 반려동물 *
           <div className="survey-checkbox-group">
-            {['강아지', '고양이', '소형동물(햄스터, 토끼 등)', '파충류', '조류', '기타', '없음'].map(
-              (label) => (
-                <label key={label}>
-                  <input
-                    type="checkbox"
-                    value={label}
-                    checked={answers.currentPets.includes(label)}
-                    onChange={(e) => handleMultiSelect(e, 'currentPets')}
-                  />
-                  {label}
-                </label>
-              )
-            )}
+            {[
+              '강아지',
+              '고양이',
+              '소형동물(햄스터, 토끼 등)',
+              '파충류',
+              '조류',
+              '기타',
+              '없음',
+            ].map((label) => (
+              <label key={label}>
+                <input
+                  type="checkbox"
+                  value={label}
+                  checked={answers.currentPets.includes(label)}
+                  onChange={(e) => handleMultiSelect(e, 'currentPets')}
+                />
+                {label}
+              </label>
+            ))}
           </div>
         </label>
 
         <label>
-          22. 반려동물 사육의향
-          <select name="wantingPet" value={answers.wantingPet} onChange={handleChange} required>
+          22. 반려동물 사육의향 *
+          <select name="wantingPet" value={answers.wantingPet} onChange={handleChange}>
             <option value="">선택하세요</option>
             <option>전혀 의향이 없다</option>
             <option>별로 의향이 없다</option>
@@ -647,7 +658,7 @@ export default function SurveyForm({ user, onSave }) {
         </label>
 
         <label>
-          24. 원하는 반려동물의 구체적 특징 (추천 키워드)
+          24. 원하는 반려동물의 구체적 특징 (추천 키워드) *
           <input
             type="text"
             name="userQuery"
@@ -657,29 +668,28 @@ export default function SurveyForm({ user, onSave }) {
           />
         </label>
 
-
         <button type="submit" disabled={loading}>
           {loading ? '저장 중...' : '제출'}
         </button>
         {error && <p style={{ color: 'red' }}>{error}</p>}
       </form>
+
       <section className="recommend-preview">
-        <h4>추천 결과</h4>
-          {recommendedAnimals.length > 0 ? (
-            <div className="result-grid">
-              {recommendedAnimals.map((a) => (
-                <AnimalCard
-                  key={a.desertionNo}
-                  animal={a}
-                  isFav={favorites.includes(a.desertionNo)}
-                  onOpen={setSelectedAnimal}
-                  onToggleFav={() => toggle(a)}
-                />
-              ))}
-            </div>
-          ) : (
-            <p>설문을 저장하면 자동으로 추천을 실행합니다.</p>
-          )}
+        {recommendedAnimals.length > 0 ? (
+          <div className="result-grid">
+            {recommendedAnimals.map((a) => (
+              <AnimalCard
+                key={a.desertionNo}
+                animal={a}
+                isFav={favorites.includes(a.desertionNo)}
+                onOpen={setSelectedAnimal}
+                onToggleFav={() => toggle(a)}
+              />
+            ))}
+          </div>
+        ) : (
+          <p></p>
+        )}
         <AnimalDetail animal={selectedAnimal} onClose={() => setSelectedAnimal(null)} />
       </section>
     </div>

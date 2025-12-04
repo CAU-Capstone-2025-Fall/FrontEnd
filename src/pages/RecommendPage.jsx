@@ -3,9 +3,10 @@ import AnimalCard from '../components/AnimalCard';
 import AnimalDetail from '../components/AnimalDetail';
 import SurveyForm from '../components/SurveyForm';
 import RecommandContainer from '../containers/RecommandContainer';
+import { useAuthStore } from '../store/useAuthStore';
+
 import '../css/cards.css';
 import '../css/recommendPage.css';
-import { useAuthStore } from '../store/useAuthStore';
 import { useFavoriteStore } from '../store/useFavoriteStore';
 
 export default function RecommendPage() {
@@ -19,9 +20,17 @@ export default function RecommendPage() {
   const { ids: favorites, map: favMap, toggle } = useFavoriteStore();
 
   if (loading) return <p>로딩 중...</p>;
-
+  if (!user) {
+    return (
+      <div className="recommend-page" style={{ padding: '60px 20px' }}>
+        <h3 className="page-title">🐾 반려동물 추천 페이지</h3>
+        <p style={{ textAlign: 'center', marginTop: 16 }}>로그인하고 이용 가능한 페이지입니다.</p>
+      </div>
+    );
+  }
   return (
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
+      <h1 className="page-title">🐾 반려동물 추천 페이지</h1>
       <div className="page-grid">
         <main className="main-col">
           {showSurvey ? (
@@ -37,7 +46,7 @@ export default function RecommendPage() {
               }}
             />
           ) : (
-            <section classNamem="recommend-only">
+            <section className="recommend-only">
               <div
                 style={{
                   display: 'flex',
@@ -51,27 +60,14 @@ export default function RecommendPage() {
                   <button
                     type="button"
                     onClick={() => setShowSurvey(true)}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: 8,
-                      border: '1px solid #e6eef6',
-                      background: '#fff',
-                      cursor: 'pointer',
-                    }}
+                    className="edit-survey-button"
                   >
                     설문 수정
                   </button>
                 </div>
               </div>
               {Array.isArray(latestRecommendations) && latestRecommendations.length > 0 ? (
-                <div
-                  className="result-grid"
-                  style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                    gap: 16,
-                  }}
-                >
+                <div className="result-grid">
                   {latestRecommendations.map((a) => (
                     <AnimalCard
                       key={a.desertionNo}

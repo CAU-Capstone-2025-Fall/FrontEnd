@@ -13,10 +13,12 @@ export default defineConfig({
       },
       '/static': {
         target: 'http://3.38.48.153:8000',
+        //target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
       '/report/': {
         target: 'http://3.38.48.153:8000',
+        //target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },
