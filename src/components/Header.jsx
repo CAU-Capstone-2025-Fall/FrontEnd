@@ -1,10 +1,10 @@
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import homeIcon from '../assets/house.png';
 import headerIcon from '../assets/logo-icon.png';
 import '../css/Header.css';
-import homeIcon from '../assets/house.png';
 import { useAuthStore } from '../store/useAuthStore';
 import { useUIStore } from '../store/useUIStore';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 
 export default function Header() {
   const { user } = useAuthStore();
@@ -45,7 +45,11 @@ export default function Header() {
           </a>
 
           <div className="site__actions">
-            {user?.role === 'admin' && <button onClick={() => navigate('/admin')}>관리자</button>}
+            {user?.role === 'admin' && (
+              <button className="admin_button" onClick={() => navigate('/admin')}>
+                관리자
+              </button>
+            )}
             {/* 로그인 */}
             <button className="login_button" onClick={toggleLogin}>
               {user ? `${user.username}님` : '로그인'}

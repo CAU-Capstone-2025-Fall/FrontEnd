@@ -1,3 +1,46 @@
+/* 기본 스타일 */
+.percentile-heading {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  letter-spacing: -0.3px;
+}
+
+/* 90~100 : 고급 민트/청록 */
+.p-highest {
+  background: linear-gradient(90deg, #1fc8a5, #39e2c0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 70~89 : 상위권 라임/옐로우 */
+.p-high {
+  background: linear-gradient(90deg, #c3d82c, #e4e969);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 50~69 : 중립 그레이/실버 */
+.p-mid {
+  background: linear-gradient(90deg, #9aa0a6, #c3c7cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 30~49 : 주의 오렌지 */
+.p-low {
+  background: linear-gradient(90deg, #f5a25c, #f8c08a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 0~29 : 레드/버건디 */
+.p-lowest {
+  background: linear-gradient(90deg, #d9534f, #f17676);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ============================================
    Report Wrapper (전체 레이아웃)
 ============================================ */
@@ -6,7 +49,7 @@
   max-width: 760px;
   margin: 48px auto 64px;
   padding: 28px 30px;
-  background: var(--bg-page);
+  background: var(--bg-report);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   animation: fadeIn 0.4s ease;
@@ -359,3 +402,4 @@
     padding: 18px 16px 16px;
   }
 }
+

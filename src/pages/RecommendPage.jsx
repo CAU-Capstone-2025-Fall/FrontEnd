@@ -1,13 +1,13 @@
-import SurveyForm from '../components/SurveyForm';
-import Recommend from '../components/Recommend';
-import { useAuthStore } from '../store/useAuthStore';
-import RecommandContainer from '../containers/RecommandContainer';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AnimalCard from '../components/AnimalCard';
 import AnimalDetail from '../components/AnimalDetail';
-import { useFavoriteStore } from '../store/useFavoriteStore';
-import '../css/recommendPage.css';
+import SurveyForm from '../components/SurveyForm';
+import RecommandContainer from '../containers/RecommandContainer';
+import { useAuthStore } from '../store/useAuthStore';
+
 import '../css/cards.css';
+import '../css/recommendPage.css';
+import { useFavoriteStore } from '../store/useFavoriteStore';
 
 export default function RecommendPage() {
   const { user, loading } = useAuthStore();
@@ -23,14 +23,14 @@ export default function RecommendPage() {
   if (!user) {
     return (
       <div className="recommend-page" style={{ padding: '60px 20px' }}>
-        <h2 className="page-title">🐾 반려동물 추천 페이지</h2>
+        <h3 className="page-title">🐾 반려동물 추천 페이지</h3>
         <p style={{ textAlign: 'center', marginTop: 16 }}>로그인하고 이용 가능한 페이지입니다.</p>
       </div>
     );
   }
   return (
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
-      <h2 className="page-title">🐾 반려동물 추천 페이지</h2>
+      <h1 className="page-title">🐾 반려동물 추천 페이지</h1>
       <div className="page-grid">
         <main className="main-col">
           {showSurvey ? (

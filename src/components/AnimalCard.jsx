@@ -1,5 +1,3 @@
-import React from 'react';
-
 function displayAge(ageStr) {
   if (!ageStr) return '-';
   const has60 = /60\s*일\s*미만|60일미만/.test(ageStr);
@@ -99,9 +97,9 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
   return (
     <div className="card">
       <div className="card__imgWrap" onClick={() => onOpen(animal)} role="button">
-        <img src={imgSrc} alt={animal.kindNm || 'animal'} />
-
         {isAIImage && <span className="ai-generated-tag">AI 생성 이미지</span>}
+
+        <img src={imgSrc} alt={animal.kindNm || 'animal'} />
 
         {typeof matchScore === 'number' && (
           <span

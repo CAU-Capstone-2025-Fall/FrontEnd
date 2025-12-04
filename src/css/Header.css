@@ -239,3 +239,15 @@ header.site {
 .menu_top_actions button:hover .home_icon {
   transform: scale(1.1);
 }
+
+.admin_button {
+  background-color: #f58585;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}

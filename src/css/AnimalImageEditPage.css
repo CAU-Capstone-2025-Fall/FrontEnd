@@ -1,0 +1,268 @@
+/* ===========================================================
+   PAGE BACKGROUND
+=========================================================== */
+.page-container {
+  padding: 24px 32px;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+
+/* GRID */
+.animal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* CARD */
+.animal-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid #e4e6eb;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  transition: 0.2s;
+}
+.animal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* IMAGE */
+.animal-image-box {
+  width: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #f1f1f1;
+}
+.animal-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* INFO */
+.animal-info {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.4;
+}
+
+/* SUCCESS */
+.preview-success {
+  font-size: 12px;
+  background: #e8f7e8;
+  padding: 5px 8px;
+  border-radius: 6px;
+  color: #1a7f1a;
+  margin-top: 8px;
+}
+
+/* BUTTON */
+.edit-btn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px 0;
+  border-radius: 8px;
+  border: none;
+  background: #4caf50;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+.edit-btn:hover {
+  background: #43a047;
+}
+.edit-btn:disabled {
+  opacity: 0.7;
+}
+
+/* EMPTY + PAGINATION */
+.empty-box {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 0;
+  color: #777;
+  font-size: 16px;
+}
+.pagination-center {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===========================================================
+   MODAL BACKDROP
+=========================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* ===========================================================
+   MODAL CONTENT — REDESIGNED
+=========================================================== */
+.modal-content.xlarge {
+  width: 900px; /* 🔥 줄임 */
+  max-width: 95%;
+  background: white;
+  padding: 22px; /* 🔥 패딩 축소 */
+  border-radius: 14px;
+  position: relative;
+  animation: popup 0.18s ease-out;
+}
+
+/* CLOSE BUTTON */
+.modal-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ececec;
+  border: none;
+  width: 32px; /* 🔥 크기 축소 */
+  height: 32px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* ===========================================================
+   BODY LAYOUT
+=========================================================== */
+/* ===========================================================
+   BODY LAYOUT — 통합 배경 적용
+=========================================================== */
+.modal-body {
+  display: flex;
+  gap: 20px;
+
+  background: #f7f7f7; /* 🔥 전체 일체감 있는 배경 */
+  border-radius: 12px;
+  padding: 20px; /* 내부 여백 */
+}
+
+/* LEFT AREA */
+.modal-left {
+  flex: 1;
+  background: transparent; /* 🔥 개별 배경 제거 */
+  padding: 0;
+}
+
+.modal-original-img,
+.modal-compare img {
+  width: 100%;
+  border-radius: 10px;
+  max-height: 280px;
+  object-fit: cover;
+}
+
+.modal-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 🔥 버튼이 아래로 자동 정렬됨 */
+}
+.compare-label {
+  display: inline-block; /* 🔥 inline 느낌 */
+  font-size: 18px; /* 🔥 글씨 조금 크게 */
+  font-weight: 600;
+  padding: 4px 10px; /* 🔥 너무 두껍지 않은 라벨 스타일 */
+  border: 2px solid #ddd; /* 🔥 border 추가 */
+  border-radius: 8px;
+  margin-bottom: 8px;
+  text-align: center;
+  background: #fafafa; /* 은은한 bg */
+}
+/* ===========================================================
+   LOADING
+=========================================================== */
+.modal-loading {
+  text-align: center;
+  padding: 28px 0;
+}
+.spinner {
+  width: 48px; /* 🔥 축소 */
+  height: 48px;
+  border: 4px solid #ddd;
+  border-top-color: #4caf50;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto 10px;
+}
+
+/* ===========================================================
+   RIGHT — PROMPT AREA
+=========================================================== */
+.modal-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-right textarea {
+  width: 100%;
+  height: 120px; /* 🔥 기존 200px → 120px */
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: none;
+}
+
+/* Keywords */
+.keyword-box {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.keyword-btn {
+  padding: 5px 10px;
+  border-radius: 14px;
+  border: 1px solid #bbb;
+  background: #f2f2f2;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* Buttons */
+.exec-btn {
+  margin-top: 14px;
+  padding: 12px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.exec-btn:hover {
+  background: #43a047;
+}
+
+.save-btn {
+  margin-top: 10px;
+  background: #2e7d32;
+}
+.save-btn:hover {
+  background: #27682b;
+}
+
+/* popup animation */
+@keyframes popup {
+  from {
+    transform: scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

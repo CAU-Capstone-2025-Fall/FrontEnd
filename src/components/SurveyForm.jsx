@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getAnimalById } from '../api/animals';
 import { encodeA } from '../api/encode.js';
 import { getSurvey, saveSurvey } from '../api/survey';
-import axios from 'axios';
-import { getAnimalById } from '../api/animals';
+import '../css/recommendPage.css';
+import { useFavoriteStore } from '../store/useFavoriteStore';
 import AnimalCard from './AnimalCard';
 import AnimalDetail from './AnimalDetail';
-import { useFavoriteStore } from '../store/useFavoriteStore';
-import '../css/recommendPage.css';
 
 const initialA = {
   age: '0',
@@ -675,7 +675,6 @@ export default function SurveyForm({ user, onSave }) {
       </form>
 
       <section className="recommend-preview">
-        <h4>추천 결과</h4>
         {recommendedAnimals.length > 0 ? (
           <div className="result-grid">
             {recommendedAnimals.map((a) => (
@@ -689,7 +688,7 @@ export default function SurveyForm({ user, onSave }) {
             ))}
           </div>
         ) : (
-          <p>설문을 저장하면 자동으로 추천을 실행합니다.</p>
+          <p></p>
         )}
         <AnimalDetail animal={selectedAnimal} onClose={() => setSelectedAnimal(null)} />
       </section>

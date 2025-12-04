@@ -57,13 +57,34 @@ function cleanLimeKey(key) {
 }
 
 function getPercentileMessage(p) {
-  if (p >= 85) return `전체 사용자 중 상위 ${100 - p}%로, 매우 안전한 편입니다.`;
-  if (p >= 70) return `전체 사용자 중 상위 ${100 - p}%로, 비교적 안전한 수준입니다.`;
-  if (p >= 50) return `전체 사용자 중 ${100 - p}% 수준으로, 보통 위험도입니다.`;
-  if (p >= 30) {
-    return `전체 대비 상위 ${100 - p}%로, 주의가 필요한 수준입니다.`;
-  }
-  return `전체 대비 하위 ${100 - p}% 위험군으로, 상당히 높은 위험 수준입니다.`;
+  if (p >= 90)
+    return `반려동물을 맞이하기에 거의 완벽에 가까운 준비가 되어 있어요. 지금의 생활과 마음가짐이면 정말 훌륭한 보호자가 되실 거예요!`;
+
+  if (p >= 80)
+    return `반려동물 양육에 매우 적합한 상태예요. 안정적이고 책임감 있는 모습이 보여요. 자신감을 가져도 좋습니다!`;
+
+  if (p >= 70)
+    return `충분히 잘 준비되어 있어요. 현재 생활 패턴을 유지하기만 해도 반려동물과 좋은 관계를 만들 수 있어요.`;
+
+  if (p >= 60)
+    return `준비가 잘 된 편이에요. 약간의 꾸준함만 더해지면 더욱 안정적인 양육 환경이 될 것 같아요.`;
+
+  if (p >= 50)
+    return `기본적인 준비는 되어 있어요. 관심과 시간을 조금만 보태면 훨씬 더 좋은 보호자가 되실 수 있습니다.`;
+
+  if (p >= 40)
+    return `전반적으로 가능성이 충분해요. 몇 가지를 보완하면 반려동물과 만족스러운 관계를 만들 수 있을 거예요.`;
+
+  if (p >= 30)
+    return `아직은 조금 부족한 부분들이 있지만, 생활 습관이나 환경을 조금만 조정하면 충분히 좋은 보호자가 될 수 있어요!`;
+
+  if (p >= 20)
+    return `준비가 덜 된 편이에요. 그래도 방향성만 잘 잡아가면 충분히 개선할 수 있습니다. 작은 변화들이 큰 차이를 만들 수 있어요.`;
+
+  if (p >= 10)
+    return `현재로서는 준비가 미흡할 수 있어요. 하지만 누구든 처음은 서툴죠. 차근차근 여건부터 정비해 나가면 가능성이 있습니다.`;
+
+  return `아직 반려동물을 맞이하기에는 무리가 있어 보여요. 그래도 포기할 필요는 전혀 없어요. 시간과 환경을 천천히 가다듬으면 언젠가는 충분히 함께할 수 있습니다.`;
 }
 
 // LIME 필터
@@ -96,6 +117,14 @@ function getLimeClass(weight) {
   } else {
     return weight > 0 ? 'lime-item lime-weak-pos' : 'lime-item lime-weak-neg';
   }
+}
+
+function getPercentileColor(p) {
+  if (p >= 90) return 'p-highest';
+  if (p >= 70) return 'p-high';
+  if (p >= 50) return 'p-mid';
+  if (p >= 30) return 'p-low';
+  return 'p-lowest';
 }
 
 // Interaction 강도별 CSS class
@@ -184,6 +213,9 @@ export default function RecommandContainer({ user, surveyVersion }) {
       {percentile !== null && (
         <section className="report-card">
           <h3>전체 사용자 대비 안전 위치</h3>
+          <h2 className={`percentile-heading ${getPercentileColor(percentile)}`}>
+            상위 {percentile}%
+          </h2>
 
           <p>{getPercentileMessage(percentile)}</p>
 
@@ -192,16 +224,6 @@ export default function RecommandContainer({ user, surveyVersion }) {
           </div>
         </section>
       )}
-
-      {/* -------------------------------- Summary */}
-      {summary && (
-        <section className="report-card summary-card">
-          <h3>분석 요약</h3>
-          {/* GPT가 두 단락으로 주면 CSS에서 pre-line으로 줄바꿈 유지 */}
-          <p className="summary-text">{summary}</p>
-        </section>
-      )}
-
       {/* -------------------------------- 행동 가이드 */}
       {recommendations.length > 0 && (
         <section className="report-card">
@@ -215,6 +237,14 @@ export default function RecommandContainer({ user, surveyVersion }) {
               </li>
             ))}
           </ul>
+        </section>
+      )}
+      {/* -------------------------------- Summary */}
+      {summary && (
+        <section className="report-card">
+          <h3>분석 요약</h3>
+          {/* GPT가 두 단락으로 주면 CSS에서 pre-line으로 줄바꿈 유지 */}
+          <p className="summary-text">{summary}</p>
         </section>
       )}
 
