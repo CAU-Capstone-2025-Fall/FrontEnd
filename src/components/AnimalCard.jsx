@@ -103,10 +103,10 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
 
         {typeof matchScore === 'number' && (
           <span
-            className={`card__score ${matchScore < 50 ? 'low' : ''}`}
-            title={`전체 매칭률: ${matchScore}%`}
+            className={`card__score ${parseInt(rec.final * 100) < 50 ? 'low' : ''}`}
+            title={`전체 매칭률: ${parseInt(rec.final * 100)}%`}
           >
-            매칭률 {matchScore}%
+            매칭률 {parseInt(rec.final * 100)}%
           </span>
         )}
       </div>
