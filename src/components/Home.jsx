@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../css/Home.css';
-import heroIntro from '../assets/firstimage_intro.png';
-import heroBrowse from '../assets/recommend_btn.png';
-import heroReport from '../assets/report_img.png';
+import heroIntro from '../assets/firstimage_intro_1.png';
+import heroBrowse from '../assets/recommend_btn_1.png';
+import heroReport from '../assets/report_img_1.png';
 import beforeDogImg from '../assets/dog_2.jpg';
 import afterDogImg from '../assets/dog_1.jpg';
 
@@ -101,6 +101,8 @@ export default function HomePage() {
                   전국 보호소의 입양 대기 동물을 한눈에 보고,
                   <br />
                   필터를 활용해 나와 잘 맞는 친구를 찾아보세요.
+                  <br />
+                  AI로 촬영 환경이 좋지 않은 사진도 더 깨끗하고 선명하게 보여드려요.
                 </p>
 
                 <div className="hero__actions">
@@ -147,6 +149,27 @@ export default function HomePage() {
             <div className="hero__visualMain">
               <img src={currentImage.src} alt={currentImage.alt} />
             </div>
+
+            <p className="hero__visualCaption">
+              {slide === 0 && (
+                <>
+                  해당 이미지는 실제 입양 대상 동물인 공고번호 <strong>428349202500501</strong>번
+                  고양이의 사진을 개선한 이미지입니다.
+                </>
+              )}
+              {slide === 1 && (
+                <>
+                  해당 이미지는 실제 입양 대상 동물인 공고번호 <strong>445479202500857</strong>번
+                  강아지의 사진을 개선한 이미지입니다.
+                </>
+              )}
+              {slide === 2 && (
+                <>
+                  해당 이미지는 실제 입양 대상 동물인 공고번호 <strong>444457202500527</strong>번
+                  강아지의 사진을 개선한 이미지입니다.
+                </>
+              )}
+            </p>
 
             <button
               className="hero__thumb hero__thumb--left"

@@ -90,6 +90,7 @@
   position: relative;
   min-height: 320px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -815,4 +816,19 @@
 .goal1__highlight {
   color: var(--accent); /* 주황 accent 컬러로 포인트 */
   font-weight: 700;
+}
+
+.hero__visualCaption {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #6b7280;
+  text-align: center;
+  padding-top: 6px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.6);
+}
+
+.hero__visualCaption strong {
+  font-weight: 700;
+  color: var(--accent); /* 주황 accent 컬러로 포인트 */
 }
