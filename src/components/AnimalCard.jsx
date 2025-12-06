@@ -29,7 +29,7 @@ function toPercentScore(raw) {
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode }) {
+export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode, rank }) {
   const imgSrc = aiMode ? animal.createdImg || animal.popfile1 : animal.popfile1;
   const isAIImage = aiMode && animal.createdImg;
 
@@ -97,16 +97,22 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
   return (
     <div className="card">
       <div className="card__imgWrap" onClick={() => onOpen(animal)} role="button">
-        {isAIImage && <span className="ai-generated-tag">AI 생성 이미지</span>}
-
         <img src={imgSrc} alt={animal.kindNm || 'animal'} />
 
-        {typeof matchScore === 'number' && (
+        {typeof rank === 'number' && (
           <span
-            className={`card__score ${parseInt(rec.final * 100) < 50 ? 'low' : ''}`}
-            title={`전체 매칭률: ${parseInt(rec.final * 100)}%`}
+            className={`card__score ${
+              rank === 1
+                ? 'card__score--1'
+                : rank === 2
+                  ? 'card__score--2'
+                  : rank === 3
+                    ? 'card__score--3'
+                    : ''
+            }`}
+            title={`추천 순위 ${rank}위`}
           >
-            매칭률 {parseInt(rec.final * 100)}%
+            {rank}위
           </span>
         )}
       </div>
@@ -129,26 +135,14 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
           <div className="card__subScores">
             {simScore !== null && (
               <div className="subScore">
-                <span className="subScore__label">조건 일치</span>
+                <span className="subScore__label">취향 매칭</span>
                 <span className="subScore__value">{simScore}%</span>
               </div>
             )}
             {compatScore !== null && (
               <div className="subScore">
-                <span className="subScore__label">입양자 적합도</span>
+                <span className="subScore__label">주거환경과의 적합도</span>
                 <span className="subScore__value">{compatScore}%</span>
-              </div>
-            )}
-            {prioScore !== null && (
-              <div className="subScore subScore--soft">
-                <span className="subScore__label">우선 필요</span>
-                <span className="subScore__value">{prioScore}%</span>
-              </div>
-            )}
-            {locScore !== null && (
-              <div className="subScore subScore--soft">
-                <span className="subScore__label">거리 편의</span>
-                <span className="subScore__value">{locScore}%</span>
               </div>
             )}
           </div>
@@ -199,6 +193,21 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode 
         <button className="btn btn--light" onClick={() => onOpen(animal)}>
           상세보기
         </button>
+
+        {isAIImage && (
+          <div className="ai-generated-box">
+            <span className="ai-generated-tag">
+              AI 생성 이미지
+              <span className="ai-generated-tag__icon" aria-hidden="true">
+                i
+              </span>
+            </span>
+            <p className="ai-generated-desc">
+              해당 이미지는 AI가 원본 이미지를 기반으로 생성한, 동물을 깨끗하게 개선한 사진입니다.
+              상세보기를 누르거나 AI 이미지 버튼을 OFF하면 원본 이미지를 확인할 수 있습니다.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

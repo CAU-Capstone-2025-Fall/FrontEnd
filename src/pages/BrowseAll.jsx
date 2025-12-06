@@ -3,10 +3,9 @@ import { getAnimals, getAnimalCount, getAnimalById } from '../api/animals';
 import Filters from '../components/Filters';
 import AnimalCard from '../components/AnimalCard';
 import AnimalDetail from '../components/AnimalDetail';
-import Pagination from '../components/Pagination';
 import { useFavoriteStore } from '../store/useFavoriteStore';
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 12;
 
 export default function BrowseAll() {
   const [tab, setTab] = useState('browse');
@@ -22,30 +21,27 @@ export default function BrowseAll() {
     ageMax: 15,
     aiMode: true,
   });
+
   const [animals, setAnimals] = useState([]);
   const [selected, setSelected] = useState(null);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(null);
-  const [lastPageSize, setLastPageSize] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const { ids: favorites, map: favMap, toggle } = useFavoriteStore();
 
-  const totalPages = useMemo(
-    () => (typeof totalCount === 'number' ? Math.ceil(totalCount / PAGE_SIZE) : null),
-    [totalCount]
-  );
-
   const applyChange = (patch) => {
-    setFilters((p) => ({ ...p, ...patch }));
+    setFilters((prev) => ({ ...prev, ...patch }));
+    // 필터 바뀌면 리스트 초기화 + 첫 페이지부터 다시
     setPage(1);
+    setAnimals([]);
+    setTotalCount(null);
+    setHasMore(false);
   };
 
-  useEffect(() => {
-    setTotalCount(null);
-  }, [JSON.stringify(filters)]);
-
-  const buildQuery = () => {
-    const q = { limit: PAGE_SIZE, skip: (page - 1) * PAGE_SIZE };
+  const buildQuery = (pageNum) => {
+    const q = { limit: PAGE_SIZE, skip: (pageNum - 1) * PAGE_SIZE };
     if (filters.species !== '모든 동물') q.upkind_nm = filters.species;
     if (filters.breed !== '모든 품종') q.kind_nm = filters.breed;
     if (filters.doName !== '모든 지역' && !filters.gun) q.org_name = filters.doName;
@@ -58,28 +54,44 @@ export default function BrowseAll() {
     return q;
   };
 
+  // 동물 리스트 로딩 (browse 탭에서만)
   useEffect(() => {
+    if (tab !== 'browse') return;
+
     let cancelled = false;
     (async () => {
-      const query = buildQuery();
-      setTotalCount((prev) => (typeof prev === 'number' && page > 1 ? prev : null));
+      const query = buildQuery(page);
+      setIsLoadingMore(true);
+
       const [list, cnt] = await Promise.all([
         getAnimals(query),
         getAnimalCount({ ...query, limit: 0, skip: 0 }).catch(() => null),
       ]);
+
       if (cancelled) return;
       const data = list || [];
-      setAnimals(data);
-      setLastPageSize(data.length);
-      if (typeof cnt === 'number') setTotalCount(cnt);
-      else setTotalCount(data.length < PAGE_SIZE ? (page - 1) * PAGE_SIZE + data.length : null);
+
+      setAnimals((prev) => (page === 1 ? data : [...prev, ...data]));
+
+      if (typeof cnt === 'number') {
+        setTotalCount(cnt);
+        const loadedCount = (page - 1) * PAGE_SIZE + data.length;
+        setHasMore(loadedCount < cnt);
+      } else {
+        // 총 개수를 못 받아온 경우: 한 페이지 꽉 찼으면 더 있을 수 있다고 가정
+        setTotalCount(null);
+        setHasMore(data.length === PAGE_SIZE);
+      }
+
+      setIsLoadingMore(false);
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [page, JSON.stringify(filters)]); // eslint-disable-line
+  }, [tab, page, JSON.stringify(filters)]); // eslint-disable-line
 
-  // ✅ Favorites 탭 진입 시, map에 없는 id는 개별 조회로 보충 (함수형 setState로 안전하게)
+  // ✅ 즐겨찾기 탭 진입 시, map에 없는 id는 개별 조회로 보충
   useEffect(() => {
     if (tab !== 'fav') return;
     const missing = favorites.filter((id) => !favMap[id]);
@@ -103,6 +115,8 @@ export default function BrowseAll() {
 
   const contentClass = 'browse__content' + (tab === 'fav' ? ' browse__content--full' : '');
 
+  const listToRender = tab === 'browse' ? animals : favAnimals;
+
   return (
     <section className="browse">
       <div className="browse__head">
@@ -125,11 +139,12 @@ export default function BrowseAll() {
       </div>
 
       <div className={contentClass}>
+        {/* 왼쪽 필터: 스크롤해도 따라오게(sticky) */}
         {tab === 'browse' && <Filters value={filters} onChange={applyChange} />}
 
         <div className="result-shell">
           <div className="result-content grid">
-            {(tab === 'browse' ? animals : favAnimals).map((a) => (
+            {listToRender.map((a) => (
               <AnimalCard
                 key={a.desertionNo}
                 animal={a}
@@ -144,19 +159,22 @@ export default function BrowseAll() {
               <div className="empty">찜한 동물이 없습니다. 하트를 눌러 추가해보세요!</div>
             )}
 
-            {tab === 'browse' && animals.length === 0 && (
+            {tab === 'browse' && animals.length === 0 && !isLoadingMore && (
               <div className="no-results">검색 결과가 없습니다</div>
             )}
           </div>
 
-          {tab === 'browse' && (
-            <Pagination
-              page={page}
-              setPage={setPage}
-              totalPages={totalPages}
-              hasMore={typeof totalCount !== 'number' && lastPageSize === PAGE_SIZE}
-              isEmpty={animals.length === 0}
-            />
+          {/* 더보기 버튼 (browse 탭 전용) */}
+          {tab === 'browse' && hasMore && animals.length > 0 && (
+            <div className="load-more-wrap">
+              <button
+                className="load-more-btn"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={isLoadingMore}
+              >
+                {isLoadingMore ? '불러오는 중...' : '더보기'}
+              </button>
+            </div>
           )}
         </div>
       </div>

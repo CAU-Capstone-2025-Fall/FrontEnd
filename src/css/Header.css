@@ -251,3 +251,54 @@ header.site {
   font-size: 16px;
   transition: background-color 0.2s;
 }
+
+.site__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* 필요하면 조절 */
+}
+
+/* 상단 네비게이션 버튼 */
+.header_nav {
+  background: transparent;
+  border: none;
+  padding: 8px 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  position: relative;
+}
+
+/* 기본 밑줄은 없음 */
+.header_nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent); /* or var(--accent) 써도 됨 */
+  transition: width 0.2s ease;
+}
+
+/* 호버 시 밑줄 */
+.header_nav:hover::after {
+  width: 100%;
+}
+
+/* 포커스 접근성 */
+.header_nav:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 141, 255, 0.4);
+  border-radius: 6px;
+}
+
+.site__actions {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* ⬅ 12px → 20px 정도로 넓혀줌 */
+}
+.login_button {
+  margin-left: 12px; /* 메뉴 그룹과 로그인 사이 간격 추가 */
+}

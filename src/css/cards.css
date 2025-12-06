@@ -98,48 +98,31 @@
   color: var(--text-soft);
 }
 
-/* AI 태그 */
-.ai-generated-tag {
-  position: absolute;
-  left: 12px;
-  bottom: 4px;
-  padding: 4px 8px;
-  font-size: 15px;
-  font-weight: 600;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.7);
-  color: #fff;
-  backdrop-filter: blur(3px);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* 메인 매칭률 뱃지 */
+/* 메인 매칭률 뱃지 (순위) - 오렌지 pill 하나로 통일 */
 .card__score {
   position: absolute;
-  top: 12px;
+  top: 10px;
   left: 12px;
   z-index: 5;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 7px 11px;
+
+  padding: 4px 12px;
+  min-width: 44px;
+  height: 26px;
   border-radius: 999px;
 
-  background: radial-gradient(
-    circle at top left,
-    rgba(139, 199, 255, 0.9),
-    rgba(255, 255, 255, 0.4)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
 
-  color: #0b2540;
-  font-weight: 700;
-  font-size: 14px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff9f3f, #ff6b2c);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+
   pointer-events: none;
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
 /* =========================================================
@@ -181,7 +164,7 @@
 }
 
 /* =========================================================
-  이유 뱃지 + 디테일 텍스트 (그라데이션 + 통일된 텍스트 색)
+  이유 뱃지 + 디테일 텍스트
 ========================================================= */
 
 .card__reasonsBlock {
@@ -198,7 +181,7 @@
   margin-top: 6px;
 }
 
-/* 공통 pill 스타일: 텍스트 색은 여기서만 지정 */
+/* 공통 pill 스타일 */
 .card__reasonBadge {
   display: inline-block;
   padding: 7px 12px;
@@ -210,34 +193,25 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  /* 기본 배경 (중립 또는 점수 없는 경우) */
   background: linear-gradient(135deg, #e5e7eb, #9ca3af);
   border: 1px solid rgba(15, 23, 42, 0.15);
 
-  color: #ffffff; /* ✅ 텍스트 컬러 통일 */
+  color: #ffffff;
   text-shadow: 0 1px 2px rgba(15, 23, 42, 0.35);
 }
 
-/* 가점 - 연한 블루/민트 그라데이션 */
 .card__reasonBadge--positive-light {
   background: linear-gradient(135deg, #a0d4f1, #96a6f8);
 }
-
-/* 가점 - 진한 블루/티얼 그라데이션 */
 .card__reasonBadge--positive-strong {
   background: linear-gradient(135deg, #6da7f2, #5061fd);
 }
-
-/* 감점 - 연한 코랄/핑크 그라데이션 */
 .card__reasonBadge--negative-light {
   background: linear-gradient(135deg, #fee2e2, #fca5a5);
 }
-
-/* 감점 - 진한 레드/버건디 그라데이션 */
 .card__reasonBadge--negative-strong {
   background: linear-gradient(135deg, #ff889a, #e65454);
 }
-
 .card__reasonBadge--neutral {
   background: linear-gradient(135deg, #d9dfea, #99adcf);
 }
@@ -248,7 +222,6 @@
   padding-left: 1.2rem;
   list-style: disc;
 }
-
 .card__reasonDetails li {
   font-size: 16px;
   line-height: 1.6;
@@ -260,8 +233,9 @@
   .card__score {
     top: 8px;
     left: 8px;
-    padding: 5px 8px;
+    height: 24px;
     font-size: 12px;
+    padding: 3px 10px;
   }
 
   .card__subScores {
@@ -271,5 +245,67 @@
   .card__reasonBadge {
     padding: 5px 9px;
     font-size: 13px;
+  }
+}
+
+/* =========================================================
+  AI 생성 이미지 안내 박스 (카드 본문 하단)
+========================================================= */
+
+.ai-generated-box {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #dcdee2; /* 어두운 박스 */
+  color: #000000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ai-generated-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+
+  background: #4b5563; /* 회색 알약 */
+  color: #f9fafb;
+}
+
+.ai-generated-tag__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1.5px solid currentColor;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ai-generated-desc {
+  margin: 0;
+}
+
+/* 모바일에서 AI 안내 박스 살짝 줄이기 */
+@media (max-width: 640px) {
+  .ai-generated-box {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+
+  .ai-generated-tag {
+    font-size: 10px;
+    padding: 2px 7px;
   }
 }

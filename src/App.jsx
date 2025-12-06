@@ -5,7 +5,7 @@ import { useAuthStore } from './store/useAuthStore';
 import AgeCalculator from './components/AgeCalculator';
 import BmiCalculator from './components/BmiCalculator';
 import Header from './components/Header';
-import HeroSection from './components/HeroSection';
+import HomePage from './components/Home';
 import RescueDogCounselor from './components/RescueDogCounselor';
 import LoginContainer from './containers/LoginContainer';
 import './index.css';
@@ -44,12 +44,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const scrollToBrowse = () => {
-    if (!browseRef.current) return;
-    const top = browseRef.current.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top, behavior: 'smooth' });
-  };
-
   return (
     <Router>
       <div className="app">
@@ -62,14 +56,14 @@ export default function App() {
               path="/"
               element={
                 <>
-                  <HeroSection onScrollToBrowse={scrollToBrowse} />
-                  <div ref={browseRef} style={{ scrollMarginTop: '80px' }}>
-                    <BrowseAll favorites={favorites} setFavorites={setFavorites} />
-                  </div>
+                  <HomePage />
                 </>
               }
             />
-
+            <Route
+              path="/browse"
+              element={<BrowseAll favorites={favorites} setFavorites={setFavorites} />}
+            />
             {/* 이미지 편집 테스트 페이지 */}
             <Route path="/admin" element={<AdminMainPage />} />
             <Route path="/admin/image-edit" element={<AnimalImageEditPage />} />

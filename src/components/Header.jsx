@@ -45,6 +45,24 @@ export default function Header() {
           </a>
 
           <div className="site__actions">
+            <button className="header_nav" onClick={() => navigate('/browse')}>
+              보호소
+            </button>
+
+            <button
+              className="header_nav"
+              onClick={() => {
+                if (!user) {
+                  alert('로그인이 필요한 서비스입니다.');
+                  toggleLogin();
+                  return;
+                }
+                navigate('/recommend');
+              }}
+            >
+              반려동물 추천
+            </button>
+
             {user?.role === 'admin' && (
               <button className="admin_button" onClick={() => navigate('/admin')}>
                 관리자
@@ -121,7 +139,14 @@ export default function Header() {
           {/* 구분선: 입양 전 */}
           <div className="menu_section_title">- 입양 전 -</div>
 
-          <button onClick={handleGoToShelter}>보호소</button>
+          <button
+            onClick={() => {
+              navigate('/browse');
+              setMenuOpen(false);
+            }}
+          >
+            보호소
+          </button>
 
           <button
             onClick={() => {

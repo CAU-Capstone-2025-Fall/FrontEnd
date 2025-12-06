@@ -52,3 +52,140 @@
 .browse__content--full {
   grid-template-columns: 1fr;
 } /* Favorites에서 필터 감춤 */
+
+/* 더보기 버튼 래퍼 */
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0 12px;
+}
+
+/* 더보기 버튼 */
+.load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+
+  padding: 12px 28px;
+  border-radius: 999px;
+  border: none;
+
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  cursor: pointer;
+  outline: none;
+
+  background: var(--accent-200);
+  color: #fff;
+
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  background: var(--accent);
+  filter: brightness(1.03);
+}
+
+.load-more-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-soft);
+  filter: brightness(0.97);
+}
+
+/* 로딩 중 or 더 이상 없을 때 */
+.load-more-btn:disabled {
+  background: var(--primary-soft);
+  color: var(--text-muted);
+  box-shadow: none;
+  cursor: default;
+  transform: none;
+  filter: none;
+}
+
+/* 브라우즈 페이지 카드 그리드: 기본 3열 */
+.browse .grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* 화면이 줄어들면 2열 */
+@media (max-width: 1024px) {
+  .browse .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 모바일에서는 1열 */
+@media (max-width: 640px) {
+  .browse .grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* 목적 ① 전용 레이아웃 */
+.goal1 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+  gap: 28px;
+  margin-top: 28px;
+  align-items: flex-start;
+}
+
+/* 사진 2장 묶음 */
+.goal1__photos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* PC에서는 가로로 나란히 */
+@media (min-width: 960px) {
+  .goal1__photos {
+    flex-direction: row;
+  }
+}
+
+.goal1__photo {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.goal1__photo img {
+  width: 100%;
+  border-radius: 14px;
+  display: block;
+}
+
+.goal1__photo figcaption {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* 설명 텍스트 박스 */
+.goal1__copy p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-sub);
+  margin: 0 0 8px;
+}
+
+/* 모바일에서 한 칸으로 스택 */
+@media (max-width: 960px) {
+  .goal1 {
+    grid-template-columns: 1fr;
+  }
+}

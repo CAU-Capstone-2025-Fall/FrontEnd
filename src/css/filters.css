@@ -189,3 +189,18 @@
     background-position: 0% 50%;
   }
 }
+
+.browse__content {
+  /* 이미 grid 구성돼 있을 가능성 있음 – 없으면 추가 */
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.filters {
+  position: sticky;
+  top: 96px; /* 헤더 높이에 맞춰 조절 */
+  max-height: calc(100vh - 120px); /* 화면 안에서 나이(세)까지 보이도록 */
+  overflow-y: auto; /* 높이 넘치면 필터 안에서만 스크롤 */
+}
