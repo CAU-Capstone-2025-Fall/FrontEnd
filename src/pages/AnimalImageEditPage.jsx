@@ -243,10 +243,10 @@ function AnimalImageEditPage() {
 
                     <div className="keyword-box">
                       {[
-                        'more dirt removal',
-                        'preserve fur texture',
-                        'keep lighting unchanged',
-                        'reduce stain',
+                        '배경을 깔끔하게 바꿔줘',
+                        '흙먼지 제거',
+                        '털을 깨끗하게 만들어줘',
+                        '얼룩을 줄여줘',
                       ].map((kw) => (
                         <button
                           key={kw}
