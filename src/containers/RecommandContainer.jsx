@@ -147,6 +147,8 @@ export default function RecommandContainer({ user, surveyVersion }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
+  const [showLimeInfo, setShowLimeInfo] = useState(false);
+  const [showInteractionInfo, setShowInteractionInfo] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -157,7 +159,7 @@ export default function RecommandContainer({ user, surveyVersion }) {
         if (!u) return setErr('로그인이 필요합니다.');
 
         const res = await getReport(u);
-        if (!res || res.success !== true) return setErr('리포트가 없습니다.');
+        if (!res || res.success !== true) return setErr('');
 
         console.log('REPORT', res.data);
         setReport(res.data);
@@ -239,19 +241,50 @@ export default function RecommandContainer({ user, surveyVersion }) {
           </ul>
         </section>
       )}
-      {/* -------------------------------- Summary */}
-      {summary && (
-        <section className="report-card">
-          <h3>분석 요약</h3>
-          {/* GPT가 두 단락으로 주면 CSS에서 pre-line으로 줄바꿈 유지 */}
-          <p className="summary-text">{summary}</p>
-        </section>
-      )}
+
+      {/* -------------------------------- LIME */}
+      <section className="report-card">
+        <h3 className="info-wrapper">
+          왜 이런 점수가 나왔나요?
+          <span className="info-icon" onClick={() => setShowLimeInfo((prev) => !prev)}>
+            i
+          </span>
+          {showLimeInfo && (
+            <div className="info-popup">
+              각 입력값이 모델에 들어갔을때 예측값이 얼마나 변하는지 관찰하여 평균을 낸 값입니다.
+              <br />
+              값이 클수록 해당 입력이 모델 예측에 부정적인 방향으로 민감하게 반응한다는 뜻입니다.
+            </div>
+          )}
+        </h3>
+
+        <ul className="lime-list">
+          {limeFiltered.map(([feat, weight]) => (
+            <li key={feat} className={getLimeClass(weight)}>
+              <span>{feat}</span>
+              <b>{weight.toFixed(4)}</b>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       {/* -------------------------------- Interaction Top 3 */}
       {interaction.length > 0 && (
         <section className="report-card">
-          <h3>주요 상호작용 요인 Top 3</h3>
+          <h3 className="info-wrapper">
+            주요 시너지 요인 Top 3
+            <span className="info-icon" onClick={() => setShowInteractionInfo((prev) => !prev)}>
+              i
+            </span>
+            {showInteractionInfo && (
+              <div className="info-popup">
+                두 요인이 함께 나타날 때 예측이 얼마나 달라지는지를 살펴보는 방식입니다.
+                <br />
+                값이 클수록 두 feature가 결합될 때 모델이 부정적인 방향으로 민감하게 반응한다는
+                뜻입니다.
+              </div>
+            )}
+          </h3>
 
           <ul className="interaction-list">
             {interaction.map(([groups, score]) => {
@@ -267,18 +300,14 @@ export default function RecommandContainer({ user, surveyVersion }) {
         </section>
       )}
 
-      {/* -------------------------------- LIME */}
-      <section className="report-card">
-        <h3>LIME 영향 요인 Top 5</h3>
-        <ul className="lime-list">
-          {limeFiltered.map(([feat, weight]) => (
-            <li key={feat} className={getLimeClass(weight)}>
-              <span>{feat}</span>
-              <b>{weight.toFixed(4)}</b>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {/* -------------------------------- Summary */}
+      {summary && (
+        <section className="report-card">
+          <h3>분석 요약</h3>
+          {/* GPT가 두 단락으로 주면 CSS에서 pre-line으로 줄바꿈 유지 */}
+          <p className="summary-text">{summary}</p>
+        </section>
+      )}
 
       {/* -------------------------------- 입력 정보 */}
       <section className="report-card">

@@ -115,7 +115,6 @@ export default function RecommendPage() {
 
   return (
     <div className="recommend-page" style={{ padding: '60px 20px' }}>
-      <h1 className="page-title">🐾 반려동물 추천 페이지</h1>
       <div className="page-grid">
         <main className="main-col">
           {showSurvey ? (
