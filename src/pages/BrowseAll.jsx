@@ -113,7 +113,7 @@ export default function BrowseAll() {
     [favorites, favMap]
   );
 
-  const contentClass = 'browse__content' + (tab === 'fav' ? ' browse__content--full' : '');
+  const contentClass = 'browse__content' + (tab === 'fav' ? '--full' : '');
 
   const listToRender = tab === 'browse' ? animals : favAnimals;
 
