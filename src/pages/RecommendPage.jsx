@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import AnimalCard from '../components/AnimalCard';
 import AnimalDetail from '../components/AnimalDetail';
 import SurveyForm from '../components/SurveyForm';
@@ -15,15 +15,8 @@ function toPercentScore(raw) {
   const n = Number(raw);
   if (Number.isNaN(n)) return null;
 
-  // 0.0 ~ 1.0 구간을 30~100으로 매핑
-  if (n <= 1.0) {
-    return Math.round(n * 70 + 30);
-  }
-  // 1~100이면 그대로 퍼센트
-  if (n <= 100) {
-    return Math.round(n);
-  }
-  // 그 외는 클램프
+  if (n <= 1.0) return Math.round(n * 70 + 30);
+  if (n <= 100) return Math.round(n);
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
@@ -43,16 +36,14 @@ function getRecommendation(animal) {
 // 정렬용 점수 계산
 function getSortScore(animal) {
   const rec = getRecommendation(animal);
-
   const final = rec.final != null ? Number(rec.final) : 0;
 
   const simScore = rec.sim != null ? toPercentScore(rec.sim) : null;
   const compatScore = rec.compat != null ? toPercentScore(rec.compat) : null;
-  const prioScore = rec.priority != null ? toPercentScore(rec.priority / 3.0) : null; // priority는 0~3 기준이라 /3
+  const prioScore = rec.priority != null ? toPercentScore(rec.priority / 3.0) : null;
   const locScore = rec.location != null ? toPercentScore(rec.location) : null;
 
   const subs = [simScore, compatScore, prioScore, locScore].filter((v) => typeof v === 'number');
-
   const avgSub = subs.length > 0 ? subs.reduce((sum, v) => sum + v, 0) / subs.length : 0;
 
   return { final, avgSub };
@@ -66,9 +57,15 @@ export default function RecommendPage() {
   const [showSurvey, setShowSurvey] = useState(true);
   const [selectedAnimal, setSelectedAnimal] = useState(null);
 
-  const { ids: favorites, map: favMap, toggle } = useFavoriteStore();
+  const [highRisk, setHighRisk] = useState(false);
+  const { ids: favorites, toggle } = useFavoriteStore();
 
-  // ✅ 여기서 정렬 + rank 부여
+  // 🔥 useCallback → 불필요한 재렌더 방지
+  const handleRiskUpdate = useCallback((prob) => {
+    setHighRisk(prob >= 0.8);
+  }, []);
+
+  // 정렬된 동물 목록
   const rankedAnimals =
     Array.isArray(latestRecommendations) && latestRecommendations.length > 0
       ? [...latestRecommendations]
@@ -78,27 +75,17 @@ export default function RecommendPage() {
 
             const fa = sa.final;
             const fb = sb.final;
+            if (fa !== fb && fa !== 0 && fb !== 0) return fb - fa;
 
-            // 1) final이 둘 다 0이 아니고, 서로 다르면 → final 기준 내림차순
-            if (fa !== fb && fa !== 0 && fb !== 0) {
-              return fb - fa;
-            }
+            if (sa.avgSub !== sb.avgSub) return sb.avgSub - sa.avgSub;
 
-            // 2) final이 0이거나 같다면 → 서브 점수 평균으로 비교
-            if (sa.avgSub !== sb.avgSub) {
-              return sb.avgSub - sa.avgSub;
-            }
-
-            // 3) 완전 같은 경우: desertionNo로 안정적인 정렬
             const idA = a.desertionNo ?? a._id ?? '';
             const idB = b.desertionNo ?? b._id ?? '';
-            if (idA < idB) return -1;
-            if (idA > idB) return 1;
-            return 0;
+            return idA.localeCompare(idB);
           })
           .map((a, idx) => ({
             ...a,
-            _rank: idx + 1, // 1위, 2위, 3위...
+            _rank: idx + 1,
           }))
       : [];
 
@@ -140,18 +127,38 @@ export default function RecommendPage() {
                 }}
               >
                 <h3 style={{ margin: 0 }}>추천 동물</h3>
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setShowSurvey(true)}
-                    className="edit-survey-button"
-                  >
-                    설문 수정
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowSurvey(true)}
+                  className="edit-survey-button"
+                >
+                  설문 수정
+                </button>
               </div>
 
-              {Array.isArray(latestRecommendations) && latestRecommendations.length > 0 ? (
+              {highRisk ? (
+                <div style={{ padding: 12 }}>
+                  <p style={{ color: '#b91c1c', fontWeight: 600 }}>
+                    현재 예측 결과에 따르면 유기 충동을 겪을 가능성이 매우 높은 편입니다. 이
+                    상태에서는 반려동물을 입양하지 않는 것을 강하게 권장드립니다.
+                  </p>
+                  <p style={{ color: '#444', marginTop: 8 }}>
+                    생활 패턴, 경제적 여건, 정서적 여유를 조금 더 점검하고, 유기 위험도를 낮출 수
+                    있는 행동 가이드를 먼저 실천해 보신 뒤 다시 한 번 신중하게 입양을 고민해 주세요.
+                  </p>
+
+                  <button
+                    type="button"
+                    className="edit-survey-button"
+                    style={{ marginTop: 16 }}
+                    onClick={() =>
+                      window.open('https://www.animal.go.kr/front/awtis/awtisMain.do', '_blank')
+                    }
+                  >
+                    반려동물 공부하러 가기
+                  </button>
+                </div>
+              ) : Array.isArray(latestRecommendations) && latestRecommendations.length > 0 ? (
                 <div className="result-grid">
                   {rankedAnimals.map((a) => (
                     <AnimalCard
@@ -160,7 +167,7 @@ export default function RecommendPage() {
                       isFav={favorites.includes(a.desertionNo)}
                       onOpen={setSelectedAnimal}
                       onToggleFav={() => toggle(a)}
-                      rank={a._rank} // ✅ 순위 전달 (1위/2위/3위)
+                      rank={a._rank}
                     />
                   ))}
                 </div>
@@ -172,6 +179,7 @@ export default function RecommendPage() {
                   </p>
                 </div>
               )}
+
               <AnimalDetail animal={selectedAnimal} onClose={() => setSelectedAnimal(null)} />
             </section>
           )}
@@ -179,7 +187,11 @@ export default function RecommendPage() {
 
         <aside className="aside-col">
           <div className="side-card">
-            <RecommandContainer key={`recommand-${surveyVersion}`} user={user.username} />
+            <RecommandContainer
+              user={user.username}
+              surveyVersion={surveyVersion}
+              onRiskUpdate={handleRiskUpdate}
+            />
           </div>
         </aside>
       </div>

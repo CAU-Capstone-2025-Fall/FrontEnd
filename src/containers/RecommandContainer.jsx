@@ -143,7 +143,7 @@ function getInteractionClass(score) {
   }
 }
 
-export default function RecommandContainer({ user, surveyVersion }) {
+export default function RecommandContainer({ user, surveyVersion, onRiskUpdate }) {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
@@ -156,22 +156,36 @@ export default function RecommandContainer({ user, surveyVersion }) {
 
       try {
         const u = user ?? localStorage.getItem('userId');
-        if (!u) return setErr('로그인이 필요합니다.');
+        if (!u) {
+          setErr('로그인이 필요합니다.');
+          if (onRiskUpdate) onRiskUpdate(0);
+          return;
+        }
 
         const res = await getReport(u);
-        if (!res || res.success !== true) return setErr('');
+        if (!res || res.success !== true) {
+          setErr('');
+          if (onRiskUpdate) onRiskUpdate(0);
+          return;
+        }
 
         console.log('REPORT', res.data);
         setReport(res.data);
+
+        if (onRiskUpdate) {
+          const p = res.data?.probability ?? 0; // 0~1 범위
+          onRiskUpdate(p);
+        }
       } catch (e) {
         setErr('불러오기 실패: ' + e.message);
+        if (onRiskUpdate) onRiskUpdate(0);
       } finally {
         setLoading(false);
       }
     }
 
     load();
-  }, [user, surveyVersion]);
+  }, [user, surveyVersion, onRiskUpdate]);
 
   if (loading) return <div className="report-wrapper">로딩 중...</div>;
   if (err) return <div className="report-wrapper">{err}</div>;
