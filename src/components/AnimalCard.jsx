@@ -12,6 +12,23 @@ function displayAge(ageStr) {
   return ageStr.trim();
 }
 
+function toPercentScoreSim(raw) {
+  if (raw === null || raw === undefined || raw === '') return null;
+  const n = Number(raw);
+  if (Number.isNaN(n)) return null;
+
+  // 0.0 ~ 1.0 구간을 30~100으로 매핑
+  if (n <= 1.0) {
+    return Math.round(n * 40 + 60);
+  }
+  // 1~100이면 그대로 퍼센트
+  if (n <= 100) {
+    return Math.round(n);
+  }
+  // 그 외는 클램프
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
 function toPercentScore(raw) {
   if (raw === null || raw === undefined || raw === '') return null;
   const n = Number(raw);
@@ -50,7 +67,7 @@ export default function AnimalCard({ animal, onOpen, onToggleFav, isFav, aiMode,
   const locRaw = rec.location;
 
   // ---- 화면용 퍼센트 스코어 ----
-  const simScore = simRaw != null ? toPercentScore(simRaw) : null;
+  const simScore = simRaw != null ? toPercentScoreSim(simRaw) : null;
   const compatScore = compatRaw != null ? toPercentScore(compatRaw) : null;
   const prioScore = prioRaw != null ? toPercentScore(prioRaw / 3.0) : null; // priority는 0~3 기준이라 /3
   const locScore = locRaw != null ? toPercentScore(locRaw) : null;
